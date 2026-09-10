@@ -18,6 +18,9 @@ export class Task {
   @Column()
   priority: string;
 
+  @Column()
+  assignee: string;
+
   @CreateDateColumn()
   createdAt: Date;
 
