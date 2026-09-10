@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Task } from './entities/task.entity.js';
 import { privateDecrypt } from 'crypto';
 import { Repository } from 'typeorm';
+import { UpdateTaskDto } from './dto/update-task.dto.js';
 
 @Injectable()
 export class TasksService {
@@ -45,10 +46,10 @@ export class TasksService {
 
 async updateTask(
   id : number,
-  updates : Partial<Task>,
+  updates : UpdateTaskDto,
 ): Promise<Task> {
 
-  console.log(id)
+  console.log(id,updates)
   const task = await this.taskRepository.preload({id,...updates});
 
   console.log(task);

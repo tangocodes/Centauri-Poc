@@ -2,6 +2,8 @@ import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/commo
 
 import { TasksService } from './tasks.service.js';
 import { Task } from './entities/task.entity.js';
+import { CreateTaskDto } from './dto/create-task.dto.js';
+import { UpdateTaskDto } from './dto/update-task.dto.js';
 
 @Controller('tasks')
 export class TasksController {
@@ -14,12 +16,7 @@ export class TasksController {
 
   @Post()
   createTask(
-    @Body() body: {
-  title: string;
-  description: string;
-  status: string;
-  priority: string;
-}
+    @Body() body : CreateTaskDto
   ) {
     return this.tasksService.createTask(
     body.title,
@@ -36,7 +33,7 @@ export class TasksController {
   }
 
   @Patch(':id')
-  updateTaskById(@Param('id') id : number , @Body() body: Task)
+  updateTaskById(@Param('id') id : number , @Body() body: UpdateTaskDto)
   {
      return this.tasksService.updateTask(Number(id),body);
   }
