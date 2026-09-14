@@ -13,13 +13,13 @@ function greeting(): string {
   const hour = new Date().getHours()
   if (hour < 12) return 'Good morning'
   if (hour < 18) return 'Good afternoon'
-  return 'Good evening'
+  return 'Good evening' 
 }
 
 export function DashboardPage() {
   const { user, tasks, navigate, deleteTask } = useApp()
   const [filters, setFilters] = useState<TaskFiltersType>(EMPTY_FILTERS)
-  const [deleteTargetId, setDeleteTargetId] = useState<string | null>(null)
+  const [deleteTargetId, setDeleteTargetId] = useState<number | null>(null)
 
   const stats = useMemo(() => getTaskStats(tasks), [tasks])
   const filtered = useMemo(() => sortByMostRecent(filterTasks(tasks, filters)), [tasks, filters])

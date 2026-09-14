@@ -5,7 +5,7 @@ import { ErrorState } from '../components/ui/ErrorState'
 import { TaskForm } from '../components/task/TaskForm'
 import { useApp } from '../context/appContext'
 
-export function TaskEditPage({ taskId }: { taskId: string }) {
+export function TaskEditPage({ taskId }: { taskId: number }) {
   const { tasks, navigate, saveTask } = useApp()
   const task = tasks.find((item) => item.id === taskId)
 
@@ -37,7 +37,7 @@ export function TaskEditPage({ taskId }: { taskId: string }) {
 
       <PageHeader
         title="Edit Task"
-        subtitle="Update the details of this task."
+        subtitle="Update the details of this tasks."
       />
 
       <TaskForm
@@ -50,8 +50,9 @@ export function TaskEditPage({ taskId }: { taskId: string }) {
         submitLabel="Save Changes"
         onSubmit={(values) => {
           // TODO: replace with a real update-task API call.
+          console.log("clicked")
           saveTask(task.id, values)
-          navigate({ name: 'task-detail', taskId })
+         // navigate({ name: 'task-detail', taskId })
         }}
         onCancel={() => navigate({ name: 'task-detail', taskId })}
       />

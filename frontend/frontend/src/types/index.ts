@@ -3,7 +3,7 @@ export type TaskStatus = 'todo' | 'in-progress' | 'completed' | 'pending'
 export type TaskPriority = 'low' | 'medium' | 'high' | 'urgent'
 
 export interface TaskComment {
-  id: string
+  id: number
   author: string
   role: string
   content: string
@@ -24,7 +24,7 @@ export interface TaskMock {
 }
 
 export interface Task {
-  id: string
+  id: number
   title: string
   description: string
   status: TaskStatus
@@ -57,8 +57,8 @@ export type Route =
   | { name: 'dashboard' }
   | { name: 'tasks' }
   | { name: 'create-task' }
-  | { name: 'edit-task'; taskId: string }
-  | { name: 'task-detail'; taskId: string }
+  | { name: 'edit-task'; taskId: number }
+  | { name: 'task-detail'; taskId: number }
   | { name: 'profile' }
 
 export interface TaskFormValues {

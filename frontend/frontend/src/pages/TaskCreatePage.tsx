@@ -19,10 +19,10 @@ export function TaskCreatePage() {
       />
 
       <TaskForm
-        onSubmit={(values) => {
+        onSubmit={ (values) => {
           // TODO: replace with a real create-task API call.
-          saveTask(null, values)
-          navigate({ name: 'tasks' })
+         saveTask(null, values)
+         navigate({ name: 'tasks' })
         }}
         onCancel={() => navigate({ name: 'tasks' })}
       />

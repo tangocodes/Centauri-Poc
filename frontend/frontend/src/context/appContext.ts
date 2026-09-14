@@ -10,16 +10,18 @@ export interface AppContextValue {
   user: UserProfile
   tasks: Task[]
   /** LOCAL-ONLY placeholder for the add-comment UI. Replace with API later. */
-  addComment: (taskId: string, content: string) => void
+  addComment: (taskId: number, content: string) => void
   /** LOCAL-ONLY placeholder hook point for create/edit forms. */
-  saveTask: (taskId: string | null, values: {
+  saveTask: (taskId: number | null, values: {
     title: string
     description: string
     status: Task['status']
     priority: Task['priority']
   }) => void
+  loading : boolean
+
   /** LOCAL-ONLY placeholder for the delete action. */
-  deleteTask: (taskId: string) => void
+  deleteTask: (taskId: number) => void
 }
 
 export const AppContext = createContext<AppContextValue | null>(null)

@@ -9,9 +9,9 @@ import type { Task } from '../../types'
 
 interface TaskListProps {
   tasks: Task[]
-  onView: (taskId: string) => void
-  onEdit: (taskId: string) => void
-  onDelete: (taskId: string) => void
+  onView: (taskId: number) => void
+  onEdit: (taskId: number) => void
+  onDelete: (taskId: number) => void
   emptyTitle?: string
   emptyDescription?: string
   showAssignee?: boolean
@@ -68,14 +68,14 @@ export function TaskList({
                 <td>
                   <PriorityBadge priority={task.priority} />
                 </td>
-                {showAssignee && (
+                {/* {showAssignee && (
                   <td>
                     <span className="assignee-cell">
                       <Avatar name={task.assignee} color={avatarColor(task.assignee)} size="sm" />
                       {task.assignee}
                     </span>
                   </td>
-                )}
+                )} */}
                 <td className="cell-date">{formatDate(task.createdAt)}</td>
                 <td className="col-actions">
                   <div className="row-actions">
@@ -138,12 +138,12 @@ export function TaskList({
                 <Icon name="calendar" size={14} />
                 {formatDate(task.createdAt)}
               </span>
-              {showAssignee && (
+              {/* {showAssignee && (
                 <span className="meta-chip">
                   <Avatar name={task.assignee} color={avatarColor(task.assignee)} size="sm" />
                   {task.assignee}
                 </span>
-              )}
+              )} */}
             </div>
           </div>
         ))}

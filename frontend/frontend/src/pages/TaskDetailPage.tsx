@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Button, IconButton } from '../components/ui/Button'
 import { Icon } from '../components/ui/Icon'
 import { Avatar } from '../components/ui/Avatar'
@@ -9,12 +9,22 @@ import { Modal } from '../components/ui/Modal'
 import { CommentSection } from '../components/task/CommentSection'
 import { useApp } from '../context/appContext'
 import { formatDateTime, avatarColor } from '../lib/format'
+import type { Task } from '../types'
 
-export function TaskDetailPage({ taskId }: { taskId: string }) {
-  const { tasks, navigate, deleteTask } = useApp()
+export function TaskDetailPage({ taskId }: { taskId: number }) {
+
+
+
+  
+  const {  tasks,navigate, deleteTask  } = useApp()
   const [confirmDelete, setConfirmDelete] = useState(false)
 
+
+ 
   const task = tasks.find((item) => item.id === taskId)
+
+
+
 
   if (!task) {
     return (
@@ -39,6 +49,8 @@ export function TaskDetailPage({ taskId }: { taskId: string }) {
     navigate({ name: 'tasks' })
   }
 
+
+ 
   return (
     <div className="page-stack">
       <IconButton label="Back to tasks" size="sm" onClick={() => navigate({ name: 'tasks' })}>
@@ -48,10 +60,10 @@ export function TaskDetailPage({ taskId }: { taskId: string }) {
       <div className="card detail-card">
         <div className="detail-top">
           <div className="detail-title-row">
-            <h2 className="detail-title">{task.title}</h2>
+            <h2 className="detail-title">{task?.title}</h2>
             <div className="detail-badges">
-              <StatusBadge status={task.status} />
-              <PriorityBadge priority={task.priority} />
+              <StatusBadge status={task?.status} />
+              <PriorityBadge priority={task?.priority} />
             </div>
           </div>
 
@@ -79,7 +91,7 @@ export function TaskDetailPage({ taskId }: { taskId: string }) {
             <div>
               <span className="meta-item-label">Status</span>
               <span className="meta-item-value">
-                <StatusBadge status={task.status} />
+                <StatusBadge status={task?.status} />
               </span>
             </div>
           </div>
@@ -90,7 +102,7 @@ export function TaskDetailPage({ taskId }: { taskId: string }) {
             <div>
               <span className="meta-item-label">Priority</span>
               <span className="meta-item-value">
-                <PriorityBadge priority={task.priority} />
+                <PriorityBadge priority={task?.priority} />
               </span>
             </div>
           </div>
@@ -125,16 +137,16 @@ export function TaskDetailPage({ taskId }: { taskId: string }) {
           <h3 className="detail-section-title">People</h3>
           <div className="detail-people">
             <span className="person-chip">
-              <Avatar name={task.assignee} color={avatarColor(task.assignee)} size="sm" />
+              {/* <Avatar name={task.assignee} color={avatarColor(task.assignee)} size="sm" /> */}
               <span>
-                <strong>{task.assignee}</strong>
+                {/* <strong>{task.assignee}</strong> */}
                 <small>Assignee</small>
               </span>
             </span>
             <span className="person-chip">
-              <Avatar name={task.createdBy} color={avatarColor(task.createdBy)} size="sm" />
+              {/* <Avatar name={task.createdBy} color={avatarColor(task.createdBy)} size="sm" /> */}
               <span>
-                <strong>{task.createdBy}</strong>
+                {/* <strong>{task.createdBy}</strong> */}
                 <small>Created by</small>
               </span>
             </span>
@@ -142,7 +154,7 @@ export function TaskDetailPage({ taskId }: { taskId: string }) {
         </div>
       </div>
 
-      <CommentSection taskId={task.id} comments={task.comments} />
+      {/* <CommentSection taskId={task.id} comments={task.comments} /> */}
 
       <Modal
         open={confirmDelete}
@@ -166,4 +178,12 @@ export function TaskDetailPage({ taskId }: { taskId: string }) {
       </Modal>
     </div>
   )
+
+   
+   
+ 
 }
+ 
+
+   
+  

@@ -8,7 +8,7 @@ import { timeAgo, avatarColor } from '../../lib/format'
 import type { TaskComment } from '../../types'
 
 interface CommentSectionProps {
-  taskId: string
+  taskId: number
   comments: TaskComment[]
 }
 

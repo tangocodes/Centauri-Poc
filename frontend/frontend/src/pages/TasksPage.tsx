@@ -9,22 +9,21 @@ import { TaskFilters } from '../components/task/TaskFilters'
 import { TaskList } from '../components/task/TaskList'
 import { useApp } from '../context/appContext'
 import { EMPTY_FILTERS, filterTasks, sortByMostRecent } from '../lib/tasks'
-import type { TaskFilters as TaskFiltersType } from '../types'
+import type { Task, TaskFilters as TaskFiltersType } from '../types'
 
 const PAGE_SIZE = 6
 
 export function TasksPage() {
-  const { tasks, navigate, deleteTask } = useApp()
+  const {  tasks,navigate, deleteTask , loading } = useApp()
   const [filters, setFilters] = useState<TaskFiltersType>(EMPTY_FILTERS)
   const [page, setPage] = useState(1)
-  const [deleteTargetId, setDeleteTargetId] = useState<string | null>(null)
-  const [loading, setLoading] = useState(true)
+  const [deleteTargetId, setDeleteTargetId] = useState<number | null>(null)
 
-  // Simulated fetch to showcase the LoadingState. Remove once wired to the API.
-  useEffect(() => {
-    const timer = window.setTimeout(() => setLoading(false), 450)
-    return () => window.clearTimeout(timer)
-  }, [])
+
+  console.log(tasks)
+ 
+
+ 
 
   // Reset to the first page whenever the filters change.
   const changeFilters = (next: TaskFiltersType) => {
@@ -64,7 +63,12 @@ export function TasksPage() {
         }
       />
 
-      <TaskFilters filters={filters} onChange={changeFilters} />
+    { loading ? (
+       <TaskFilters filters={filters} onChange={changeFilters} />
+
+    ):
+    <></>
+    } 
 
       {loading ? (
         <div className="card">
