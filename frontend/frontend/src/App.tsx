@@ -1,5 +1,6 @@
 import { AppProvider } from './context/AppContext'
 import { useApp } from './context/appContext'
+import { ToastContainer } from './components/ui/Toast'
 import { AppLayout } from './components/layout/AppLayout'
 import { LoginPage } from './pages/LoginPage'
 import { DashboardPage } from './pages/DashboardPage'
@@ -60,6 +61,7 @@ export default function App() {
   return (
     <AppProvider>
       <Router />
+      <ToastContainer />
     </AppProvider>
   )
 }

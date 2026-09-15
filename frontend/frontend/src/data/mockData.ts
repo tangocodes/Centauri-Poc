@@ -18,9 +18,9 @@ function daysAgo(days: number, extraHours = 0): string {
 
 export const currentUser: UserProfile = {
   id: 'u-1',
-  name: 'Sarah Mitchell',
-  email: 'sarah.mitchell@centauri.io',
-  role: 'Product Manager',
+  name: 'Mohammed Shaik',
+  email: 'Mohammed.Shaik@centauri.io',
+  role: 'Full Stack Developer',
   department: 'Product',
   location: 'Remote — New York, US',
   timezone: 'America/New_York (UTC-05:00)',

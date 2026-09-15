@@ -1,5 +1,5 @@
 import { createContext, useContext } from 'react'
-import type { Route, Task, UserProfile } from '../types'
+import type { Route, Task, ToastItem, ToastType, UserProfile } from '../types'
 
 export interface AppContextValue {
   route: Route
@@ -18,7 +18,14 @@ export interface AppContextValue {
     status: Task['status']
     priority: Task['priority']
   }) => void
-  loading : boolean
+  loading : boolean, 
+  apiError : string,
+  clearErrorState : () => void
+
+  /** Toast notifications — call showToast from anywhere via useApp(). */
+  toasts: ToastItem[]
+  showToast: (message: string, type?: ToastType) => void
+  dismissToast: (id: number) => void
 
   /** LOCAL-ONLY placeholder for the delete action. */
   deleteTask: (taskId: number) => void

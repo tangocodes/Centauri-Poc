@@ -1,6 +1,6 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
-import type { Route, Task } from '../types'
+import type { Route, Task, ToastItem, ToastType } from '../types'
 import { currentUser } from '../data/mockData'
 import { AppContext } from './appContext'
 
@@ -10,10 +10,18 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [tasks, setTasks] = useState<Task[]>([])
   const [loading,setLoading] = useState(false)
+  const [apiError,setAPIError] = useState("")
+  const [toasts, setToasts] = useState<ToastItem[]>([])
+  const toastIdRef = useRef(0)
 
-  
+  const dismissToast = useCallback((id: number) => {
+    setToasts((prev) => prev.filter((toast) => toast.id !== id))
+  }, [])
 
-
+  const showToast = useCallback((message: string, type: ToastType = 'info') => {
+    // Keep at most 4 visible; splice from the front.
+    setToasts((prev) => [...prev.slice(-3), { id: ++toastIdRef.current, message, type }])
+  }, [])
 
   useEffect(() => {
   
@@ -27,11 +35,17 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
   },[tasks])
 
+
+  const clearErrorState = ()=>{
+    setAPIError("")
+  }
+
    const createTask = async (values : Partial<Task>)=>
     {
   
       try
       {
+      clearErrorState()
       setLoading(true)
     let response = await fetch('http://localhost:3000/tasks/', 
       {
@@ -46,12 +60,23 @@ export function AppProvider({ children }: { children: ReactNode }) {
   
          await response.json()
          await fetchTask()
+         showToast('Task created successfully', 'success')
+         setTimeout(() => {
+           setRoute({ name: 'tasks' })
+         }, 2000)
 
+
+      }
+      if(response.ok===false)
+      {
+         setAPIError(`Request failed ${response.status}`)
+        throw new Error(`Request failed ${response.status}`)
       }
       }
       catch(err) 
       {
-         
+
+
          console.log(err)
       }
        finally
@@ -66,6 +91,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   
       try
       {
+      clearErrorState()
       setLoading(true)
     let response = await fetch(`http://localhost:3000/tasks/${id}`, 
       {
@@ -79,7 +105,13 @@ export function AppProvider({ children }: { children: ReactNode }) {
   
          await response.json()
          await fetchTask()
-
+         showToast('Task deleted successfully', 'success')
+         
+      }
+      if(response.ok===false)
+      {
+                setAPIError(`Request failed ${response.status}`)
+        throw new Error(`Request failed ${response.status}`)
       }
       }
       catch(err) 
@@ -97,6 +129,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     const fetchTask  = async()=>{
        try
       {
+      clearErrorState()
       setLoading(true)
     let response = await fetch('http://localhost:3000/tasks/')
       if(response.ok)
@@ -105,6 +138,12 @@ export function AppProvider({ children }: { children: ReactNode }) {
   
          let data = await response.json()
          setTasks(data)
+      }
+      if(response.ok===false)
+      {
+        setAPIError(`Request failed ${response.status}`)
+
+        throw new Error(`Request failed ${response.status}`)
       }
       }
       catch(err) 
@@ -121,6 +160,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     const editTaskFetch = async (id : number ,values : Partial<Task>)=>{
        try
       {
+      clearErrorState()
       setLoading(true)
     let response = await fetch(`http://localhost:3000/tasks/${id}`, 
       {
@@ -130,20 +170,35 @@ export function AppProvider({ children }: { children: ReactNode }) {
       method : 'PATCH',
       body: JSON.stringify(values)
     })
+
+    console.log(response.ok)
+  
       if(response.ok)
       {
   
          await response.json()
          await fetchTask()
+        showToast('Task updated successfully', 'success')
+        setTimeout(() => {
+          setRoute({ name: 'task-detail', taskId: id })
+        }, 2000)
+
+      }
+      if(response.ok===false)
+      {
+        setAPIError(`Request failed ${response.status}`)
+        throw new Error(`Request failed ${response.status}`)
       }
       }
       catch(err) 
       {
-         console.log(err)
+
+         console.log(err,"Error")
       }
        finally
       {
         setLoading(false)
+
       }
   
     }
@@ -168,18 +223,12 @@ export function AppProvider({ children }: { children: ReactNode }) {
   }) => {
 console.log(taskId ,"Hello")
     if(taskId==null)
-    {
+    { 
      await createTask(values)
-      setRoute({ name: 'tasks' })
-
     }
     else
     {
      await editTaskFetch(taskId,values)
-
-      
-    setRoute({ name: 'task-detail',taskId })
-
       
 
     }
@@ -226,6 +275,11 @@ console.log(taskId ,"Hello")
         saveTask,
         loading,
         deleteTask,
+        apiError,
+        clearErrorState,
+        toasts,
+        showToast,
+        dismissToast
       }}
     >
       {children}

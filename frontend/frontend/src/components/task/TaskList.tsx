@@ -2,19 +2,21 @@ import { Icon } from '../ui/Icon'
 import { IconButton } from '../ui/Button'
 import { StatusBadge } from '../ui/StatusBadge'
 import { PriorityBadge } from '../ui/PriorityBadge'
-import { Avatar } from '../ui/Avatar'
 import { EmptyState } from '../ui/EmptyState'
-import { formatDate, avatarColor } from '../../lib/format'
+import { formatDate  } from '../../lib/format'
 import type { Task } from '../../types'
 
+
 interface TaskListProps {
-  tasks: Task[]
+
+  tasks: Task[]   
   onView: (taskId: number) => void
   onEdit: (taskId: number) => void
   onDelete: (taskId: number) => void
   emptyTitle?: string
   emptyDescription?: string
   showAssignee?: boolean
+
 }
 
 export function TaskList({

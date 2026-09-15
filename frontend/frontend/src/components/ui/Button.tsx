@@ -7,6 +7,7 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: ButtonVariant
   size?: ButtonSize
   icon?: ReactNode
+
 }
 
 export function Button({
@@ -15,6 +16,7 @@ export function Button({
   icon,
   className,
   children,
+  disabled,
   ...rest
 }: ButtonProps) {
   const classes = ['btn', `btn-${variant}`, `btn-${size}`, className]
@@ -22,7 +24,7 @@ export function Button({
     .join(' ')
 
   return (
-    <button type="button" className={classes} {...rest}>
+    <button type="button" className={classes} {...rest} disabled={disabled}>
       {icon && <span className="btn-icon">{icon}</span>}
       {children}
     </button>
@@ -40,6 +42,7 @@ export function IconButton({
   variant = 'default',
   size = 'md',
   className,
+  disabled, 
   ...rest
 }: IconButtonProps) {
   const classes = ['icon-btn', `icon-btn-${variant}`, `icon-btn-${size}`, className]
@@ -55,6 +58,8 @@ export function IconButton({
       className={classes}
       aria-label={label}
       title={label}
+      disabled={disabled}
+      
     >
       {rest.children}
     </button>

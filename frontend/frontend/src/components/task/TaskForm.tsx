@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Button } from '../ui/Button'
+import { Icon } from '../ui/Icon'
 import { Input, Textarea, FormField } from '../ui/Input'
 import { Select } from '../ui/Select'
 import { STATUS_OPTIONS, PRIORITY_OPTIONS } from '../../constants'
@@ -10,6 +11,8 @@ interface TaskFormProps {
   submitLabel?: string
   onSubmit: (values: TaskFormValues) => void
   onCancel: () => void
+  loading?: boolean
+  apiError?: string
 }
 
 const EMPTY_VALUES: TaskFormValues = {
@@ -24,6 +27,8 @@ export function TaskForm({
   submitLabel = 'Create Task',
   onSubmit,
   onCancel,
+  loading = false,
+  apiError = ''
 }: TaskFormProps) {
   const [values, setValues] = useState<TaskFormValues>({
     ...EMPTY_VALUES,
@@ -43,6 +48,9 @@ export function TaskForm({
   }
 
   const handleSubmit = () => {
+    // Guard against double-submits (belt & braces; native `disabled`
+    // already blocks clicks, this also protects programmatic calls).
+    if (loading) return
     if (!validate()) return
     onSubmit({
       title: values.title.trim(),
@@ -114,12 +122,27 @@ export function TaskForm({
         </FormField>
       </div>
 
+      {apiError && (
+        <div className="form-alert" role="alert">
+          <Icon name="alert" size={16} />
+          <span>{apiError}</span>
+        </div>
+      )}
+
       <div className="form-actions">
         <Button variant="secondary" onClick={onCancel}>
           Cancel
         </Button>
-        <Button onClick={handleSubmit}>{submitLabel}</Button>
+        <Button
+          variant="primary"
+          disabled={loading}
+          onClick={handleSubmit}
+        >
+          {loading ? 'Saving…' : submitLabel}
+        </Button>
       </div>
+      
+
     </div>
   )
 }

@@ -3,9 +3,14 @@ import { IconButton } from '../components/ui/Button'
 import { Icon } from '../components/ui/Icon'
 import { TaskForm } from '../components/task/TaskForm'
 import { useApp } from '../context/appContext'
+import { useEffect } from 'react'
 
 export function TaskCreatePage() {
-  const { navigate, saveTask } = useApp()
+  const { navigate, saveTask, loading, apiError,clearErrorState } = useApp()
+
+  useEffect(()=>{
+clearErrorState()
+  },[])
 
   return (
     <div className="page-stack">
@@ -24,6 +29,8 @@ export function TaskCreatePage() {
          saveTask(null, values)
          navigate({ name: 'tasks' })
         }}
+        loading={loading}
+        apiError={apiError}
         onCancel={() => navigate({ name: 'tasks' })}
       />
     </div>

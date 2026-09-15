@@ -67,3 +67,11 @@ export interface TaskFormValues {
   status: TaskStatus
   priority: TaskPriority
 }
+
+export type ToastType = 'success' | 'error' | 'info'
+
+export interface ToastItem {
+  id: number
+  message: string
+  type: ToastType
+}
