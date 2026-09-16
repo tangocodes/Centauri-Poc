@@ -81,8 +81,10 @@ export function AppProvider({ children }: { children: ReactNode }) {
       }
        finally
       {
+setTimeout(()=>{
         setLoading(false)
-      }
+
+        },1000)      }
   
     }
 
@@ -110,7 +112,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
       }
       if(response.ok===false)
       {
-                setAPIError(`Request failed ${response.status}`)
+        setAPIError(`Request failed ${response.status}`)
+        showToast('unable to delete', 'error')
         throw new Error(`Request failed ${response.status}`)
       }
       }
@@ -120,8 +123,10 @@ export function AppProvider({ children }: { children: ReactNode }) {
       }
        finally
       {
+setTimeout(()=>{
         setLoading(false)
-      }
+
+        },1000)      }
   
     }
 
@@ -152,7 +157,10 @@ export function AppProvider({ children }: { children: ReactNode }) {
       }
       finally
       {
+        setTimeout(()=>{
         setLoading(false)
+
+        },1000)
       }
     }
 
@@ -169,10 +177,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       },
       method : 'PATCH',
       body: JSON.stringify(values)
-    })
-
-    console.log(response.ok)
-  
+    })  
       if(response.ok)
       {
   
@@ -197,8 +202,10 @@ export function AppProvider({ children }: { children: ReactNode }) {
       }
        finally
       {
+setTimeout(()=>{
         setLoading(false)
 
+        },1000)
       }
   
     }

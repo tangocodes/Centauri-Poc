@@ -27,7 +27,7 @@ export function TaskForm({
   submitLabel = 'Create Task',
   onSubmit,
   onCancel,
-  loading = false,
+  loading,
   apiError = ''
 }: TaskFormProps) {
   const [values, setValues] = useState<TaskFormValues>({
@@ -60,6 +60,7 @@ export function TaskForm({
     })
   }
 
+  console.log(loading,"taskform")
   return (
     <div className="card form-card">
       <div className="form-grid">
