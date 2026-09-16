@@ -16,6 +16,7 @@ export class TasksController {
     return this.tasksService.getAllTasks();
   }
 
+  @UseGuards(JwtAuthGuard)
   @Post()
   createTask(
     @Body() body : CreateTaskDto
@@ -28,18 +29,21 @@ export class TasksController {
     );
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get(':id')
   getTaskById(@Param('id') id: number)
   {
     return this.tasksService.getTasksById(Number(id));
   }
 
+  @UseGuards(JwtAuthGuard)
   @Patch(':id')
   updateTaskById(@Param('id') id : number , @Body() body: UpdateTaskDto)
   {
      return this.tasksService.updateTask(Number(id),body);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Delete(':id')
   deleteById(@Param('id') id: number){
     return this.tasksService.deleteTaskById(Number(id))

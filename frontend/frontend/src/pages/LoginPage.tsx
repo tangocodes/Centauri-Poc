@@ -147,7 +147,7 @@ export function LoginPage() {
                 onChange={(event) => setRemember(event.target.checked)}
               />
               <button type="button" className="link-btn">
-                Forgot password?
+                New User?
               </button>
             </div>
 
@@ -156,9 +156,9 @@ export function LoginPage() {
             </Button>
           </form>
 
-          <p className="login-demo-hint">
+          {/* <p className="login-demo-hint">
             Demo mode — enter any credentials to continue.
-          </p>
+          </p> */}
         </div>
       </main>
     </div>
