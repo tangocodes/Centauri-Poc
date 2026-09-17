@@ -23,22 +23,34 @@ export function AppProvider({ children }: { children: ReactNode }) {
     setToasts((prev) => [...prev.slice(-3), { id: ++toastIdRef.current, message, type }])
   }, [])
 
-  useEffect(() => {
+  // useEffect(() => {
   
-    fetchTask()
-    // const timer = window.setTimeout(() => setLoading(false), 500)
-    // return () => window.clearTimeout(timer)
+  //   fetchTask()
+  //   // const timer = window.setTimeout(() => setLoading(false), 500)
+  //   // return () => window.clearTimeout(timer)
 
-  }, [])
+  // }, [])
 
   useEffect(()=>{
 
   },[tasks])
 
 
+  const handleUnauthorized = () => {
+  localStorage.removeItem('access_token')
+  setIsAuthenticated(false)
+  setRoute({ name: 'login' })
+}
+
   const clearErrorState = ()=>{
     setAPIError("")
   }
+
+  const getToken = ()=>{
+   return localStorage.getItem('access_token')
+  }
+
+
 
    const createTask = async (values : Partial<Task>)=>
     {
@@ -50,7 +62,9 @@ export function AppProvider({ children }: { children: ReactNode }) {
     let response = await fetch('http://localhost:3000/tasks/', 
       {
          headers: {
-        'Content-Type': 'application/json' 
+        'Content-Type': 'application/json' ,
+        'Authorization': `Bearer ${getToken()}`
+
       },
       method : 'POST',
       body: JSON.stringify(values)
@@ -66,6 +80,11 @@ export function AppProvider({ children }: { children: ReactNode }) {
          }, 2000)
 
 
+      }
+      if(response.status===401)
+      {
+        handleUnauthorized()
+        return
       }
       if(response.ok===false)
       {
@@ -98,7 +117,8 @@ setTimeout(()=>{
     let response = await fetch(`http://localhost:3000/tasks/${id}`, 
       {
          headers: {
-        'Content-Type': 'application/json' 
+        'Content-Type': 'application/json' ,
+        'Authorization': `Bearer ${getToken()}`
       },
       method : 'DELETE',
     })
@@ -109,6 +129,11 @@ setTimeout(()=>{
          await fetchTask()
          showToast('Task deleted successfully', 'success')
          
+      }
+      if(response.status===401)
+      {
+        handleUnauthorized()
+        return
       }
       if(response.ok===false)
       {
@@ -136,13 +161,24 @@ setTimeout(()=>{
       {
       clearErrorState()
       setLoading(true)
-    let response = await fetch('http://localhost:3000/tasks/')
+    let response = await fetch('http://localhost:3000/tasks/',{
+      headers :{
+                'Authorization': `Bearer ${getToken()}`
+
+
+      }
+    })
       if(response.ok)
       {
   
   
          let data = await response.json()
          setTasks(data)
+      }
+       if(response.status===401)
+      {
+        handleUnauthorized()
+        return
       }
       if(response.ok===false)
       {
@@ -173,7 +209,9 @@ setTimeout(()=>{
     let response = await fetch(`http://localhost:3000/tasks/${id}`, 
       {
          headers: {
-        'Content-Type': 'application/json' 
+        'Content-Type': 'application/json' ,
+        'Authorization': `Bearer ${getToken()}`
+
       },
       method : 'PATCH',
       body: JSON.stringify(values)
@@ -189,6 +227,11 @@ setTimeout(()=>{
         }, 2000)
 
       }
+       if(response.status===401)
+      {
+        handleUnauthorized()
+        return
+      }
       if(response.ok===false)
       {
         setAPIError(`Request failed ${response.status}`)
@@ -202,22 +245,72 @@ setTimeout(()=>{
       }
        finally
       {
-setTimeout(()=>{
+        setTimeout(()=>{
         setLoading(false)
 
         },1000)
       }
   
     }
+
+    const loginUser = async (email : string,password : string)=>{
+
+      const details = {email,password}
+      try 
+      {
+        const response = await fetch('http://localhost:3000/login' , {
+           method:"POST",
+           headers:{'Content-Type': 'application/json',
+
+           } ,
+           body:JSON.stringify(details),
+           
+        })
+
+        if(response.status==401)
+        {
+
+          showToast("Unauthorized! please enter correct email and password","error")
+        }
+
+        if(!response.ok)
+        {
+          throw new Error
+        }
+        else
+        {
+          const data = await response.json()
+          const access_token = data.access_token
+
+          console.log(access_token)
+          
+          localStorage.setItem('access_token', access_token);
+          setIsAuthenticated(true)
+          setRoute({ name: 'dashboard' })
+          fetchTask()
+           
+        }
+
+      }
+      catch(err)
+      {
+           console.log(err)
+      }
+
+    }
+
+
   // ── Mock "auth". Replace with your real login/logout implementation. ──────
-  const login = useCallback(() => {
-    setIsAuthenticated(true)
-    setRoute({ name: 'dashboard' })
+  const login = useCallback((email : string, password : string) => {
+    
+    loginUser(email,password)
   }, [])
 
   const logout = useCallback(() => {
     setIsAuthenticated(false)
     setRoute({ name: 'login' })
+    showToast("Please login again","error")
+    localStorage.removeItem('access_token')
   }, [])
 
   
@@ -267,6 +360,8 @@ console.log(taskId ,"Hello")
       }),
     )
   }, [])
+
+
 
   return (
     <AppContext.Provider

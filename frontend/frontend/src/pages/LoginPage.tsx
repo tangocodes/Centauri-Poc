@@ -30,7 +30,7 @@ export function LoginPage() {
 
     if (password === '') {
       nextErrors.password = 'Password is required'
-    } else if (password.length < 6) {
+    } else if (password.length < 3) {
       nextErrors.password = 'Password must be at least 6 characters'
     }
 
@@ -41,7 +41,9 @@ export function LoginPage() {
   const handleSubmit = () => {
     // TODO: replace with real authentication (NestJS API).
     if (!validate()) return
-    login()
+    login(email,password)
+
+
   }
 
   return (
@@ -135,7 +137,7 @@ export function LoginPage() {
                   aria-label={showPassword ? 'Hide password' : 'Show password'}
                   onClick={() => setShowPassword((value) => !value)}
                 >
-                  <Icon name="eye" size={17} />
+                 {showPassword ?<Icon name="eye" size={17} /> : <Icon name="logout" size={17} /> } 
                 </button>
               </div>
             </FormField>

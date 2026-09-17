@@ -5,7 +5,7 @@ export interface AppContextValue {
   route: Route
   navigate: (route: Route) => void
   isAuthenticated: boolean
-  login: () => void
+  login: (email: string , password:string) => void
   logout: () => void
   user: UserProfile
   tasks: Task[]

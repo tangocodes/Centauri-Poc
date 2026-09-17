@@ -15,8 +15,8 @@ const TOAST_ICONS: Record<ToastType, IconName> = {
 
 const AUTO_DISMISS_MS: Record<ToastType, number> = {
   success: 1500,
-  error: 7000,
-  info: 4000,
+  error: 1500,
+  info: 1500,
 }
 
 /** Accent colors duplicated from the CSS tokens as an inline fallback so the
@@ -102,7 +102,7 @@ export function ToastContainer() {
       aria-label="Notifications"
       style={{
         position: 'fixed',
-        bottom: 24,
+        top: 24,
         right: 24,
         zIndex: 1000,
         display: 'flex',
