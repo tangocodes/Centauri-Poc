@@ -31,15 +31,23 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
   // }, [])
 
-  useEffect(()=>{
+ 
 
-  },[tasks])
+  useEffect(()=>{
+    if(getToken()!==null)
+    {
+      setIsAuthenticated(true)
+      setRoute({name:'dashboard'})
+      fetchTask()
+    }
+  },[])
 
 
   const handleUnauthorized = () => {
   localStorage.removeItem('access_token')
   setIsAuthenticated(false)
   setRoute({ name: 'login' })
+    showToast('Session expired. Please login again.', 'error')
 }
 
   const clearErrorState = ()=>{
@@ -339,28 +347,32 @@ console.log(taskId ,"Hello")
     deleteTaskFetch(taskId)
   }, [])
 
-  const addComment = useCallback((taskId: number, content: string) => {
-    setTasks((prev) =>
-      prev.map((task) => {
-        if (task.id !== taskId) return task
-        return {
-          ...task,
-          updatedAt: new Date().toISOString(),
-          comments: [
-            ...task?.comments,
-            {
-              id: `local-${Date.now()}`,
-              author: currentUser.name,
-              role: currentUser.role,
-              content,
-              createdAt: new Date().toISOString(),
-            },
-          ],
-        }
-      }),
-    )
-  }, [])
+  // const addComment = 
+  // useCallback((taskId: number, content: string) => {
+  //   setTasks((prev) =>
+  //     prev.map((task) => {
+  //       if (task.id !== taskId) return task
+  //       return {
+  //         ...task,
+  //         updatedAt: new Date().toISOString(),
+  //         comments: [
+  //           ...task?.comments,
+  //           {
+  //             id: `local-${Date.now()}`,
+  //             author: currentUser.name,
+  //             role: currentUser.role,
+  //             content,
+  //             createdAt: new Date().toISOString(),
+  //           },
+  //         ],
+  //       }
+  //     }),
+  //   )
+  // }, [])
 
+  const addComment = ()=>{}
+
+  
 
 
   return (

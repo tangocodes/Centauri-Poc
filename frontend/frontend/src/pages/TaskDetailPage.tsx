@@ -1,15 +1,14 @@
-import { useEffect, useState } from 'react'
+import {  useState } from 'react'
 import { Button, IconButton } from '../components/ui/Button'
 import { Icon } from '../components/ui/Icon'
-import { Avatar } from '../components/ui/Avatar'
+// import { Avatar } from '../components/ui/Avatar'
 import { StatusBadge } from '../components/ui/StatusBadge'
 import { PriorityBadge } from '../components/ui/PriorityBadge'
 import { ErrorState } from '../components/ui/ErrorState'
 import { Modal } from '../components/ui/Modal'
-import { CommentSection } from '../components/task/CommentSection'
+// import { CommentSection } from '../components/task/CommentSection'
 import { useApp } from '../context/appContext'
-import { formatDateTime, avatarColor } from '../lib/format'
-import type { Task } from '../types'
+import { formatDateTime } from '../lib/format'
 
 export function TaskDetailPage({ taskId }: { taskId: number }) {
 

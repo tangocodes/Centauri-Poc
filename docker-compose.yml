@@ -1,0 +1,24 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: centauri-postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres_dev
+      POSTGRES_DB: centauri_tasks
+
+  backend:
+    build: ./backend
+    container_name: centauri-backend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - postgres
+
+  frontend:
+    build: ./frontend/frontend
+    container_name: centauri-frontend
+    ports:
+      - "5173:80"
+    depends_on:
+      - backend

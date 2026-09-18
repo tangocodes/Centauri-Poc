@@ -31,7 +31,7 @@ export function LoginPage() {
     if (password === '') {
       nextErrors.password = 'Password is required'
     } else if (password.length < 3) {
-      nextErrors.password = 'Password must be at least 6 characters'
+      nextErrors.password = 'Password must be at least 3 characters'
     }
 
     setErrors(nextErrors)

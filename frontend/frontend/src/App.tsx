@@ -13,9 +13,16 @@ import { ProfilePage } from './pages/ProfilePage'
 function Router() {
   const { route, isAuthenticated } = useApp()
 
+
   if (!isAuthenticated) {
     return <LoginPage />
   }
+//   else
+//   {
+// return <AppLayout>
+//           <DashboardPage />
+//         </AppLayout>
+//   }
 
   switch (route.name) {
     case 'dashboard':

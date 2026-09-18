@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import {  useMemo, useState } from 'react'
 import { Button } from '../components/ui/Button'
 import { Icon } from '../components/ui/Icon'
 import { PageHeader } from '../components/ui/PageHeader'
@@ -9,7 +9,7 @@ import { TaskFilters } from '../components/task/TaskFilters'
 import { TaskList } from '../components/task/TaskList'
 import { useApp } from '../context/appContext'
 import { EMPTY_FILTERS, filterTasks, sortByMostRecent } from '../lib/tasks'
-import type { Task, TaskFilters as TaskFiltersType } from '../types'
+import type {  TaskFilters as TaskFiltersType } from '../types'
 
 const PAGE_SIZE = 6
 
