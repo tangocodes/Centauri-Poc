@@ -39,11 +39,8 @@ export interface UserProfile {
   email: string
   role: string
   department: string
-  location: string
-  timezone: string
   bio: string
   joinedAt: string
-  avatarColor: string
 }
 
 export interface TaskFilters {

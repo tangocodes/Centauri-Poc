@@ -1071,6 +1071,83 @@ a {
 }
 
 /* ────────────────────────────────────────────────────────────────────────────
+   Auth mode switch (Login ⇄ Signup)
+   ──────────────────────────────────────────────────────────────────────────── */
+.auth-forms {
+  overflow: hidden;
+}
+
+.auth-switch-stack {
+  position: relative;
+}
+
+.auth-switch-stack--animating .auth-panel {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  pointer-events: none;
+}
+
+.auth-panel {
+  will-change: transform, opacity;
+}
+
+.auth-switch-text {
+  margin-top: 22px;
+  text-align: center;
+  font-size: 14px;
+  color: var(--text-500);
+}
+
+.auth-switch-text .link-btn {
+  font-size: 14px;
+}
+
+.login-form-title:focus {
+  outline: none;
+}
+
+/* The swap always moves left → right: the incoming panel slides in from the
+   left while the outgoing panel slides out to the right, in both directions. */
+@keyframes auth-enter-left {
+  from {
+    transform: translateX(-0px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes auth-exit-right {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(0px);
+    opacity: 0;
+  }
+}
+
+.auth-panel-enter-left {
+  animation: auth-enter-left 0ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.auth-panel-exit-right {
+  animation: auth-exit-right 0ms cubic-bezier(0.4, 0, 1, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .auth-panel-enter-left,
+  .auth-panel-exit-right {
+    animation-duration: 3ms;
+  }
+}
+
+/* ────────────────────────────────────────────────────────────────────────────
    Page building blocks
    ──────────────────────────────────────────────────────────────────────────── */
 .page-stack {

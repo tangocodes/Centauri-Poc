@@ -11,12 +11,13 @@ import { TaskDetailPage } from './pages/TaskDetailPage'
 import { ProfilePage } from './pages/ProfilePage'
 
 function Router() {
-  const { route, isAuthenticated } = useApp()
+  const { route } = useApp()
 
 
-  if (!isAuthenticated) {
-    return <LoginPage />
-  }
+  
+  // if (!isAuthenticated) {
+  //   return <LoginPage />
+  // }
 //   else
 //   {
 // return <AppLayout>
@@ -61,6 +62,8 @@ function Router() {
           <ProfilePage />
         </AppLayout>
       )
+    case 'login':
+    return <LoginPage />
   }
 }
 

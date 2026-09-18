@@ -37,7 +37,7 @@ export function DashboardPage() {
     <div className="page-stack">
       <section className="greeting">
         <h2 className="greeting-title">
-          {greeting()}, {user.name.split(' ')[0]}
+          {greeting()}, {user?.name.split(' ')[0]}
           <span aria-hidden="true"> 👋</span>
         </h2>
         <p className="greeting-subtitle">

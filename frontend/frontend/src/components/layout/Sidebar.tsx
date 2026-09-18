@@ -90,10 +90,10 @@ export function Sidebar({ open, onNavigate }: SidebarProps) {
 
         <div className="sidebar-footer">
           <div className="sidebar-user">
-            <Avatar name={user.name} color={user.avatarColor} size="sm" />
+            {user &&<Avatar name={user?.name} color="#2563eb" size="sm" />}
             <div className="sidebar-user-info">
-              <span className="sidebar-user-name">{user.name}</span>
-              <span className="sidebar-user-role">{user.role}</span>
+              <span className="sidebar-user-name">{user?.name}</span>
+              <span className="sidebar-user-role">{user?.role}</span>
             </div>
             <button
               type="button"

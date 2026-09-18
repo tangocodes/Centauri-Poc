@@ -8,12 +8,12 @@ import { Avatar } from '../components/ui/Avatar'
 import { useApp } from '../context/appContext'
 import { formatDate } from '../lib/format'
 
-const TIMEZONES = [
-  { value: 'America/New_York (UTC-05:00)', label: 'America/New_York (UTC-05:00)' },
-  { value: 'Europe/London (UTC+00:00)', label: 'Europe/London (UTC+00:00)' },
-  { value: 'Europe/Berlin (UTC+01:00)', label: 'Europe/Berlin (UTC+01:00)' },
-  { value: 'Asia/Singapore (UTC+08:00)', label: 'Asia/Singapore (UTC+08:00)' },
-]
+// const TIMEZONES = [
+//   { value: 'America/New_York (UTC-05:00)', label: 'America/New_York (UTC-05:00)' },
+//   { value: 'Europe/London (UTC+00:00)', label: 'Europe/London (UTC+00:00)' },
+//   { value: 'Europe/Berlin (UTC+01:00)', label: 'Europe/Berlin (UTC+01:00)' },
+//   { value: 'Asia/Singapore (UTC+08:00)', label: 'Asia/Singapore (UTC+08:00)' },
+// ]
 
 export function ProfilePage() {
   const { user, logout } = useApp()
@@ -22,7 +22,7 @@ export function ProfilePage() {
   const [email, setEmail] = useState(user.email)
   const [role, setRole] = useState(user.role)
   const [department, setDepartment] = useState(user.department)
-  const [timezone, setTimezone] = useState(user.timezone)
+  // const [timezone, setTimezone] = useState(user.timezone)
 
   const [emailNotifications, setEmailNotifications] = useState(true)
   const [taskReminders, setTaskReminders] = useState(true)
@@ -36,7 +36,6 @@ export function ProfilePage() {
       email,
       role,
       department,
-      timezone,
     })
   }
 
@@ -44,7 +43,7 @@ export function ProfilePage() {
     <div className="page-stack">
       <div className="card profile-card">
         <div className="profile-head">
-          <Avatar name={user.name} color={user.avatarColor} size="lg" />
+          <Avatar name={user.name} color="#2563eb" size="lg" />
           <div className="profile-head-info">
             <h2 className="profile-name">{user.name}</h2>
             <p className="profile-role">{user.role} · {user.department}</p>
@@ -61,10 +60,10 @@ export function ProfilePage() {
             <Icon name="calendar" size={15} />
             <span>Joined {formatDate(user.joinedAt)}</span>
           </div>
-          <div className="profile-stat">
+          {/* <div className="profile-stat">
             <Icon name="clock" size={15} />
             <span>{user.timezone}</span>
-          </div>
+          </div> */}
         </div>
       </div>
 
@@ -88,6 +87,7 @@ export function ProfilePage() {
               type="email"
               value={email}
               onChange={(event) => setEmail(event.target.value)}
+              disabled
             />
           </FormField>
           <FormField label="Job title" htmlFor="profile-role">
@@ -104,14 +104,14 @@ export function ProfilePage() {
               onChange={(event) => setDepartment(event.target.value)}
             />
           </FormField>
-          <FormField label="Timezone" htmlFor="profile-timezone">
+          {/* <FormField label="Timezone" htmlFor="profile-timezone">
             <Select
               id="profile-timezone"
               value={timezone}
               options={TIMEZONES}
               onChange={(event) => setTimezone(event.target.value)}
             />
-          </FormField>
+          </FormField> */}
         </div>
 
         <div className="form-actions">

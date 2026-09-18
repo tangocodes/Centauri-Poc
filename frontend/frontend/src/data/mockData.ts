@@ -22,11 +22,9 @@ export const currentUser: UserProfile = {
   email: 'Mohammed.Shaik@centauri.io',
   role: 'Full Stack Developer',
   department: 'Product',
-  location: 'Remote — New York, US',
-  timezone: 'America/New_York (UTC-05:00)',
   bio: 'Leading the Centauri task management platform from concept to launch.',
   joinedAt: '2023-05-12T09:00:00.000Z',
-  avatarColor: '#2563eb',
+  // avatarColor: '#2563eb',
 }
 
 // const taskComments = {

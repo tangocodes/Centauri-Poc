@@ -5,6 +5,8 @@ import { PriorityBadge } from '../ui/PriorityBadge'
 import { EmptyState } from '../ui/EmptyState'
 import { formatDate  } from '../../lib/format'
 import type { Task } from '../../types'
+import { useApp } from '../../context/appContext'
+import { Avatar } from '../ui/Avatar'
 
 
 interface TaskListProps {
@@ -35,6 +37,8 @@ export function TaskList({
       </div>
     )
   }
+
+  const {user} = useApp()
 
   return (
     <>
@@ -70,14 +74,14 @@ export function TaskList({
                 <td>
                   <PriorityBadge priority={task.priority} />
                 </td>
-                {/* {showAssignee && (
+                {showAssignee && (
                   <td>
                     <span className="assignee-cell">
-                      <Avatar name={task.assignee} color={avatarColor(task.assignee)} size="sm" />
-                      {task.assignee}
+                      <Avatar name={user.name} color="#de3242" size="sm" />
+                      {user.name}
                     </span>
                   </td>
-                )} */}
+                )}
                 <td className="cell-date">{formatDate(task.createdAt)}</td>
                 <td className="col-actions">
                   <div className="row-actions">
