@@ -77,8 +77,8 @@ export function TaskList({
                 {showAssignee && (
                   <td>
                     <span className="assignee-cell">
-                      <Avatar name={user.name} color="#de3242" size="sm" />
-                      {user.name}
+                      {user &&<Avatar name={user.name} color="#de3242" size="sm" />}
+                      {user?.name}
                     </span>
                   </td>
                 )}

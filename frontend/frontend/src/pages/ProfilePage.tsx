@@ -2,7 +2,6 @@ import { useState } from 'react'
 import { Button } from '../components/ui/Button'
 import { Icon } from '../components/ui/Icon'
 import { Input, FormField } from '../components/ui/Input'
-import { Select } from '../components/ui/Select'
 import { Toggle } from '../components/ui/Toggle'
 import { Avatar } from '../components/ui/Avatar'
 import { useApp } from '../context/appContext'
@@ -18,10 +17,10 @@ import { formatDate } from '../lib/format'
 export function ProfilePage() {
   const { user, logout } = useApp()
 
-  const [name, setName] = useState(user.name)
-  const [email, setEmail] = useState(user.email)
-  const [role, setRole] = useState(user.role)
-  const [department, setDepartment] = useState(user.department)
+  const [name, setName] = useState(user?.name)
+  const [email, setEmail] = useState(user?.email)
+  const [role, setRole] = useState(user?.role)
+  const [department, setDepartment] = useState(user?.department)
   // const [timezone, setTimezone] = useState(user.timezone)
 
   const [emailNotifications, setEmailNotifications] = useState(true)
@@ -43,22 +42,22 @@ export function ProfilePage() {
     <div className="page-stack">
       <div className="card profile-card">
         <div className="profile-head">
-          <Avatar name={user.name} color="#2563eb" size="lg" />
+         {user &&  <Avatar name={user?.name} color="#2563eb" size="lg" />}
           <div className="profile-head-info">
-            <h2 className="profile-name">{user.name}</h2>
-            <p className="profile-role">{user.role} · {user.department}</p>
-            <p className="profile-email">{user.email}</p>
-            <p className="profile-bio">{user.bio}</p>
+            <h2 className="profile-name">{user?.name}</h2>
+            <p className="profile-role">{user?.role} · {user?.department}</p>
+            <p className="profile-email">{user?.email}</p>
+            <p className="profile-bio">{user?.bio}</p>
           </div>
         </div>
         <div className="profile-stats">
           <div className="profile-stat">
             <Icon name="briefcase" size={15} />
-            <span>{user.department} team</span>
+            <span>{user?.department} team</span>
           </div>
           <div className="profile-stat">
             <Icon name="calendar" size={15} />
-            <span>Joined {formatDate(user.joinedAt)}</span>
+            {user &&<span>Joined {formatDate(user.joinedAt)}</span>}
           </div>
           {/* <div className="profile-stat">
             <Icon name="clock" size={15} />

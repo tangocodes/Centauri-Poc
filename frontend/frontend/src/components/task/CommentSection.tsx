@@ -54,7 +54,7 @@ export function CommentSection({ taskId, comments }: CommentSectionProps) {
       </div>
 
       <div className="comment-composer">
-        <Avatar name={user.name} color={user.avatarColor} size="sm" />
+        {user &&<Avatar name={user?.name} color="#d42313" size="sm" />}
         <div className="comment-composer-input">
           <Textarea
             rows={2}

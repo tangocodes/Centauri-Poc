@@ -8,7 +8,7 @@ export interface AppContextValue {
   login: (email: string , password:string) => void
   signUp: (name: string , email: string , password:string) => void
   logout: () => void
-  user: UserProfile
+  user: UserProfile | null
   tasks: Task[]
   /** LOCAL-ONLY placeholder for the add-comment UI. Replace with API later. */
   addComment: (taskId: number, content: string) => void

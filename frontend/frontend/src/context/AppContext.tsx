@@ -5,6 +5,7 @@ import { AppContext } from './appContext'
 
 
 export function AppProvider({ children }: { children: ReactNode }) {
+  const API_URL = import.meta.env.VITE_API_URL
   const [route, setRoute] = useState<Route>({ name: 'login' })
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [tasks, setTasks] = useState<Task[]>([])
@@ -12,7 +13,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [apiError, setAPIError] = useState("")
   const [toasts, setToasts] = useState<ToastItem[]>([])
   const toastIdRef = useRef(0)
-  const [userDetails, setUserDetails] = useState<UserProfile>()
+  const [userDetails, setUserDetails] = useState<UserProfile | null>(null)
 
   const dismissToast = useCallback((id: number) => {
     setToasts((prev) => prev.filter((toast) => toast.id !== id))
@@ -65,7 +66,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     try {
       clearErrorState()
       setLoading(true)
-      let response = await fetch('http://localhost:3000/tasks/',
+      let response = await fetch(`${API_URL}/tasks/`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -114,7 +115,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     try {
       clearErrorState()
       setLoading(true)
-      let response = await fetch(`http://localhost:3000/tasks/${id}`,
+      let response = await fetch(`${API_URL}/tasks/${id}`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -156,7 +157,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     try {
       clearErrorState()
       setLoading(true)
-      let response = await fetch('http://localhost:3000/tasks/', {
+      let response = await fetch(`${API_URL}/tasks/`, {
         headers: {
           'Authorization': `Bearer ${getToken()}`
 
@@ -195,7 +196,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     try {
       clearErrorState()
       setLoading(true)
-      let response = await fetch(`http://localhost:3000/tasks/${id}`,
+      let response = await fetch(`${API_URL}/tasks/${id}`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -241,7 +242,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
     const details = { email, password }
     try {
-      const response = await fetch('http://localhost:3000/login', {
+      const response = await fetch(`${API_URL}/login`, {
         method: "POST",
         headers: {
           'Content-Type': 'application/json',
@@ -286,7 +287,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
     const details = { name, email, password }
     try {
-      const response = await fetch('http://localhost:3000/users', {
+      const response = await fetch(`${API_URL}/users`, {
         method: "POST",
         headers: {
           'Content-Type': 'application/json',
@@ -325,7 +326,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     const access_token = getToken()
     if (access_token) {
       try {
-        const response = await fetch('http://localhost:3000/users/me', {
+        const response = await fetch(`${API_URL}/users/me`, {
           method: "GET",
           headers: {
             'Content-Type': 'application/json',
