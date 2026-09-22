@@ -1,4 +1,5 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, ManyToOne } from 'typeorm';
+import { User } from '../../users/entities/user.entity.js';
 
 @Entity('tasks')
 export class Task {
@@ -15,9 +16,11 @@ export class Task {
   @Column()
   status: string;
 
+  @ManyToOne(() => User, { nullable: true }) // one user can have multiple tasks thats why manytoone
+  assignedToId: User | null;
+
   @Column()
   priority: string;
-
 
   @CreateDateColumn()
   createdAt: Date;

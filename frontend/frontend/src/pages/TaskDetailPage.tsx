@@ -1,7 +1,7 @@
 import {  useState } from 'react'
 import { Button, IconButton } from '../components/ui/Button'
 import { Icon } from '../components/ui/Icon'
-// import { Avatar } from '../components/ui/Avatar'
+import { Avatar } from '../components/ui/Avatar'
 import { StatusBadge } from '../components/ui/StatusBadge'
 import { PriorityBadge } from '../components/ui/PriorityBadge'
 import { ErrorState } from '../components/ui/ErrorState'
@@ -9,6 +9,7 @@ import { Modal } from '../components/ui/Modal'
 // import { CommentSection } from '../components/task/CommentSection'
 import { useApp } from '../context/appContext'
 import { formatDateTime } from '../lib/format'
+import { avatarColor } from '../lib/format'
 
 export function TaskDetailPage({ taskId }: { taskId: number }) {
 
@@ -136,10 +137,10 @@ export function TaskDetailPage({ taskId }: { taskId: number }) {
           <h3 className="detail-section-title">People</h3>
           <div className="detail-people">
             <span className="person-chip">
-              {/* <Avatar name={task.assignee} color={avatarColor(task.assignee)} size="sm" /> */}
+             {task.assignedToId && <Avatar name={task.assignedToId?.name} color={avatarColor(task.assignedToId?.name)} size="sm" /> } 
               <span>
-                {/* <strong>{task.assignee}</strong> */}
-                <small>Assignee</small>
+                <strong>{task.assignedToId?.name}</strong>
+                <small>Assigned to</small>
               </span>
             </span>
             <span className="person-chip">

@@ -3,9 +3,8 @@ import { IconButton } from '../ui/Button'
 import { StatusBadge } from '../ui/StatusBadge'
 import { PriorityBadge } from '../ui/PriorityBadge'
 import { EmptyState } from '../ui/EmptyState'
-import { formatDate  } from '../../lib/format'
+import { avatarColor, formatDate  } from '../../lib/format'
 import type { Task } from '../../types'
-import { useApp } from '../../context/appContext'
 import { Avatar } from '../ui/Avatar'
 
 
@@ -38,7 +37,6 @@ export function TaskList({
     )
   }
 
-  const {user} = useApp()
 
   return (
     <>
@@ -50,7 +48,7 @@ export function TaskList({
               <th>Task</th>
               <th>Status</th>
               <th>Priority</th>
-              {showAssignee && <th>Assignee</th>}
+              {showAssignee && <th>Assigned To</th>}
               <th>Created</th>
               <th className="col-actions" aria-label="Actions" />
             </tr>
@@ -77,8 +75,8 @@ export function TaskList({
                 {showAssignee && (
                   <td>
                     <span className="assignee-cell">
-                      {user &&<Avatar name={user.name} color="#de3242" size="sm" />}
-                      {user?.name}
+                      {task.assignedToId &&<Avatar name={task.assignedToId.name} color={avatarColor(task.assignedToId.name)} size="sm" />}
+                      {task.assignedToId ? task.assignedToId  .name : <b>Not Assigned</b>}
                     </span>
                   </td>
                 )}

@@ -2,6 +2,7 @@ import { Icon } from '../ui/Icon'
 import { Avatar } from '../ui/Avatar'
 import { useApp } from '../../context/appContext'
 import type { Route } from '../../types'
+import { avatarColor } from '../../lib/format'
 
 interface NavItem {
   route: Route['name']
@@ -90,7 +91,7 @@ export function Sidebar({ open, onNavigate }: SidebarProps) {
 
         <div className="sidebar-footer">
           <div className="sidebar-user">
-            {user &&<Avatar name={user?.name} color="#2563eb" size="sm" />}
+            {user &&<Avatar name={user?.name} color={avatarColor(user?.name)} size="sm" />}
             <div className="sidebar-user-info">
               <span className="sidebar-user-name">{user?.name}</span>
               <span className="sidebar-user-role">{user?.role}</span>

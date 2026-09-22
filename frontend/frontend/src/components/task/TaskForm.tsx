@@ -4,7 +4,7 @@ import { Icon } from '../ui/Icon'
 import { Input, Textarea, FormField } from '../ui/Input'
 import { Select } from '../ui/Select'
 import { STATUS_OPTIONS, PRIORITY_OPTIONS } from '../../constants'
-import type { TaskFormValues, TaskPriority, TaskStatus } from '../../types'
+import type { AllUsers, TaskFormValues, TaskPriority, TaskStatus } from '../../types'
 
 interface TaskFormProps {
   initialValues?: Partial<TaskFormValues>
@@ -13,6 +13,7 @@ interface TaskFormProps {
   onCancel: () => void
   loading?: boolean
   apiError?: string
+  allUsersData : AllUsers[] | null
 }
 
 const EMPTY_VALUES: TaskFormValues = {
@@ -20,6 +21,8 @@ const EMPTY_VALUES: TaskFormValues = {
   description: '',
   status: 'todo',
   priority: 'medium',
+  assignedToId : ''
+
 }
 
 export function TaskForm({
@@ -28,21 +31,25 @@ export function TaskForm({
   onSubmit,
   onCancel,
   loading,
-  apiError = ''
+  apiError = '',
+  allUsersData
 }: TaskFormProps) {
   const [values, setValues] = useState<TaskFormValues>({
     ...EMPTY_VALUES,
     ...initialValues,
   })
-  const [errors, setErrors] = useState<{ title?: string }>({})
+  const [errors, setErrors] = useState<{ title?: string , description? : string}>({})
 
   const validate = (): boolean => {
-    const nextErrors: { title?: string } = {}
+    const nextErrors: { title?: string , description ? : string } = {}
     if (values.title.trim() === '') {
       nextErrors.title = 'Title is required'
     } else if (values.title.trim().length < 3) {
       nextErrors.title = 'Title must be at least 3 characters'
     }
+     if (values.description.trim() === '') {
+      nextErrors.description = 'Description is required'
+    } 
     setErrors(nextErrors)
     return Object.keys(nextErrors).length === 0
   }
@@ -57,8 +64,20 @@ export function TaskForm({
       description: values.description.trim(),
       status: values.status,
       priority: values.priority,
+      assignedToId : values.assignedToId
     })
   }
+
+  const ASSIGNED_USERS = [{
+    value: '',
+    label: 'Unassigned',
+  },...allUsersData?.map((value) => ({
+    value : String(value.id),
+    label: value.name,
+  }))||[]]
+
+  console.log(ASSIGNED_USERS,values )
+  
 
   console.log(loading,"taskform")
   return (
@@ -84,6 +103,9 @@ export function TaskForm({
         <FormField
           label="Description"
           htmlFor="task-description"
+          required
+          error={errors.description}
+
           className="form-field-full"
         >
           <Textarea
@@ -92,6 +114,7 @@ export function TaskForm({
             rows={5}
             placeholder="Add a short description of the task…"
             value={values.description}
+            invalid={Boolean(errors.description)}
             onChange={(event) =>
               setValues({ ...values, description: event.target.value })
             }
@@ -118,6 +141,18 @@ export function TaskForm({
             options={PRIORITY_OPTIONS}
             onChange={(event) =>
               setValues({ ...values, priority: event.target.value as TaskPriority })
+            }
+          />
+        </FormField>
+
+         <FormField label="Assigned to" htmlFor="assigned-to">
+          <Select
+            id="assigned-to"
+            name="assigned-to"
+            value={values.assignedToId}
+            options={ASSIGNED_USERS}
+            onChange={(event) =>
+              setValues({ ...values, assignedToId: event.target.value as string })
             }
           />
         </FormField>

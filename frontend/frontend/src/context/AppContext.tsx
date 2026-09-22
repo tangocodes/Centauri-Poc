@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
-import type { Route, Task, ToastItem, ToastType, UserProfile } from '../types'
+import { type AllUsers, type Route, type Task, type ToastItem, type ToastType, type UserProfile } from '../types'
 import { AppContext } from './appContext'
 
 
@@ -14,6 +14,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [toasts, setToasts] = useState<ToastItem[]>([])
   const toastIdRef = useRef(0)
   const [userDetails, setUserDetails] = useState<UserProfile | null>(null)
+  const [allUserData, setAllUserData] = useState<AllUsers[] | null>(null);
 
   const dismissToast = useCallback((id: number) => {
     setToasts((prev) => prev.filter((toast) => toast.id !== id))
@@ -24,13 +25,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     setToasts((prev) => [...prev.slice(-3), { id: ++toastIdRef.current, message, type }])
   }, [])
 
-  // useEffect(() => {
 
-  //   fetchTask()
-  //   // const timer = window.setTimeout(() => setLoading(false), 500)
-  //   // return () => window.clearTimeout(timer)
-
-  // }, [])
 
 
 
@@ -40,6 +35,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       setRoute({ name: 'dashboard' })
       getUserData()
       fetchTask()
+      getAllUsers()
     }
   }, [])
 
@@ -64,6 +60,15 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const createTask = async (values: Partial<Task>) => {
 
     try {
+
+
+      const payload = {
+        ...values,
+        assignedToId: values.assignedToId
+          ? Number(values.assignedToId)
+          : undefined,
+      }
+      console.log(payload)
       clearErrorState()
       setLoading(true)
       let response = await fetch(`${API_URL}/tasks/`,
@@ -74,7 +79,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
           },
           method: 'POST',
-          body: JSON.stringify(values)
+          body: JSON.stringify(payload)
         })
       if (response.ok) {
 
@@ -194,6 +199,12 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
   const editTaskFetch = async (id: number, values: Partial<Task>) => {
     try {
+      const payload = {
+        ...values,
+        assignedToId: values.assignedToId
+          ? Number(values.assignedToId)
+          : undefined,
+      }
       clearErrorState()
       setLoading(true)
       let response = await fetch(`${API_URL}/tasks/${id}`,
@@ -204,7 +215,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
           },
           method: 'PATCH',
-          body: JSON.stringify(values)
+          body: JSON.stringify(payload)
         })
       if (response.ok) {
 
@@ -272,6 +283,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
         setIsAuthenticated(true)
         setRoute({ name: 'dashboard' })
         fetchTask()
+        getAllUsers()
 
       }
 
@@ -335,16 +347,16 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
         })
 
-       if (response.status === 401) {
-        handleUnauthorized()
-        return
-      }
+        if (response.status === 401) {
+          handleUnauthorized()
+          return
+        }
 
-       if (response.ok === false) {
-        setAPIError(`Request failed ${response.status}`)
+        if (response.ok === false) {
+          setAPIError(`Request failed ${response.status}`)
 
-        throw new Error(`Request failed ${response.status}`)
-      }
+          throw new Error(`Request failed ${response.status}`)
+        }
         else {
           const user = await response.json()
           console.log(user)
@@ -356,6 +368,45 @@ export function AppProvider({ children }: { children: ReactNode }) {
         console.log(err)
       }
     }
+  }
+
+  const getAllUsers = async () => {
+
+    const access_token = getToken()
+    if (access_token) {
+      try {
+        const response = await fetch(`${API_URL}/users/`, {
+          method: "GET",
+          headers: {
+            'Content-Type': 'application/json',
+            'authorization': `Bearer ${access_token}`
+          },
+
+        })
+
+        if (response.status === 401) {
+          handleUnauthorized()
+          return
+        }
+
+        if (response.ok === false) {
+          setAPIError(`Request failed ${response.status}`)
+
+          throw new Error(`Request failed ${response.status}`)
+        }
+        else {
+          const users = await response.json()
+          console.log(users)
+          setAllUserData(users)
+
+        }
+
+      }
+      catch (err) {
+        console.log(err)
+      }
+    }
+
   }
 
 
@@ -379,8 +430,10 @@ export function AppProvider({ children }: { children: ReactNode }) {
     description: string
     status: Task['status']
     priority: Task['priority']
+    assignedToId: string | undefined
   }) => {
-    console.log(taskId, "Hello")
+
+
     if (taskId == null) {
       await createTask(values)
     }
@@ -433,6 +486,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
         signUp,
         login,
         logout,
+        allUsers: allUserData,
         user: userDetails,
         tasks,
         addComment,

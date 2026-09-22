@@ -1,5 +1,5 @@
 import { createContext, useContext } from 'react'
-import type { Route, Task, ToastItem, ToastType, UserProfile } from '../types'
+import type { AllUsers, Route, Task, ToastItem, ToastType, UserProfile } from '../types'
 
 export interface AppContextValue {
   route: Route
@@ -9,6 +9,7 @@ export interface AppContextValue {
   signUp: (name: string , email: string , password:string) => void
   logout: () => void
   user: UserProfile | null
+  allUsers : AllUsers[] | null
   tasks: Task[]
   /** LOCAL-ONLY placeholder for the add-comment UI. Replace with API later. */
   addComment: (taskId: number, content: string) => void
@@ -18,6 +19,7 @@ export interface AppContextValue {
     description: string
     status: Task['status']
     priority: Task['priority']
+    assignedToId: string | undefined
   }) => void
   loading : boolean, 
   apiError : string,

@@ -6,18 +6,24 @@ import { JwtAuthGuard } from '../auth/jwt-auth/jwt-auth.guard.js';
 
 @Controller('users')
 export class UsersController {
-    constructor( private readonly userService : UsersService
-    ){}
+    constructor(private readonly userService: UsersService
+    ) { }
     @Post()
-    createUser(@Body() body:CreateUserDto )
-    {
+    createUser(@Body() body: CreateUserDto) {
 
         return this.userService.createUser(body);
     }
 
-   @UseGuards(JwtAuthGuard)
-   @Get('me')
-   getCurrentUser(@Request() req : any) {
-  return this.userService.getUserById(req.user.sub)//sub means user id which is coming request set in authguard
-     }     
+    @UseGuards(JwtAuthGuard)
+    @Get('me')
+    getCurrentUser(@Request() req: any) {
+        return this.userService.getUserById(req.user.sub)//sub means user id which is coming request set in authguard
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Get()
+    getAllUsers()
+    {
+        return this.userService.getAllUsers()
+    }
 }

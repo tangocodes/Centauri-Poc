@@ -1,4 +1,4 @@
-import { IsOptional, IsString } from 'class-validator';
+import { IsInt, IsOptional, IsString } from 'class-validator';
 
 
 export class UpdateTaskDto {
@@ -17,4 +17,8 @@ export class UpdateTaskDto {
   @IsOptional()
   @IsString()
   priority: string;
+
+  @IsOptional()
+  @IsInt()
+  assignedToId?: number;
 }

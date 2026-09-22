@@ -5,7 +5,7 @@ import { Input, FormField } from '../components/ui/Input'
 import { Toggle } from '../components/ui/Toggle'
 import { Avatar } from '../components/ui/Avatar'
 import { useApp } from '../context/appContext'
-import { formatDate } from '../lib/format'
+import { avatarColor, formatDate } from '../lib/format'
 
 // const TIMEZONES = [
 //   { value: 'America/New_York (UTC-05:00)', label: 'America/New_York (UTC-05:00)' },
@@ -42,7 +42,7 @@ export function ProfilePage() {
     <div className="page-stack">
       <div className="card profile-card">
         <div className="profile-head">
-         {user &&  <Avatar name={user?.name} color="#2563eb" size="lg" />}
+         {user &&  <Avatar name={user?.name} color={avatarColor(user?.name)} size="lg" />}
           <div className="profile-head-info">
             <h2 className="profile-name">{user?.name}</h2>
             <p className="profile-role">{user?.role} · {user?.department}</p>

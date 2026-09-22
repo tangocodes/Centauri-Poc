@@ -36,9 +36,12 @@ export class UsersService {
     }
 
 
-    async findUserByEmail(email: string): Promise<User | null> {
-
-        return await this.userRepository.findOne({ where: { email } })
+    async findUserByEmail(email: string) {
+        return this.userRepository
+            .createQueryBuilder('user')
+            .addSelect('user.passwordHash')
+            .where('user.email = :email', { email })
+            .getOne();
     }
 
 
@@ -59,6 +62,14 @@ export class UsersService {
         }
         return user;
 
+    }
+
+    async getAllUsers() {
+        return await this.userRepository.find(
+            {
+                select: ['id', 'name', 'email'],  //rows you want
+            }
+        );
     }
 
 }

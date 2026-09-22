@@ -6,7 +6,7 @@ import { useApp } from '../context/appContext'
 import { useEffect } from 'react'
 
 export function TaskCreatePage() {
-  const { navigate, saveTask, loading, apiError,clearErrorState } = useApp()
+  const { navigate, saveTask, loading, apiError,clearErrorState,allUsers } = useApp()
 
   useEffect(()=>{
 clearErrorState()
@@ -32,6 +32,7 @@ clearErrorState()
         loading={loading}
         apiError={apiError}
         onCancel={() => navigate({ name: 'tasks' })}
+        allUsersData = {allUsers}
       />
     </div>
   )

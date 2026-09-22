@@ -4,6 +4,7 @@ import { IconButton } from '../ui/Button'
 import { Avatar } from '../ui/Avatar'
 import { useApp } from '../../context/appContext'
 import type { Route } from '../../types'
+import { avatarColor } from '../../lib/format'
 
 const PAGE_TITLES: Partial<Record<Route['name'], string>> = {
   dashboard: 'Dashboard',
@@ -56,7 +57,7 @@ export function Header({ onMenuClick }: HeaderProps) {
             aria-expanded={menuOpen}
             aria-haspopup="menu"
           >
-            {user && <Avatar name={user?.name} color="#2563eb" size="sm" />}
+            {user && <Avatar name={user?.name} color={avatarColor(user?.name)} size="sm" />}
             <span className="header-user-text">
               <span className="header-user-name">{user?.name}</span>
               <span className="header-user-role">{user?.role}</span>

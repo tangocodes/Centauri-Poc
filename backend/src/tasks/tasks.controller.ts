@@ -26,6 +26,7 @@ export class TasksController {
     body.description,
     body.status,
     body.priority,
+    body.assignedToId
     );
   }
 

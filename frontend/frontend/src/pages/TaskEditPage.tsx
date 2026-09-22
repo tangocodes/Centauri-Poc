@@ -7,8 +7,10 @@ import { useApp } from '../context/appContext'
 import { useEffect } from 'react'
 
 export function TaskEditPage({ taskId }: { taskId: number }) {
-  const { tasks, navigate, saveTask ,loading , apiError,clearErrorState } = useApp()
+  const { tasks, navigate, saveTask ,loading , apiError,clearErrorState ,allUsers } = useApp()
   const task = tasks.find((item) => item.id === taskId)
+  
+  console.log(task)
   
 
   useEffect(()=>{
@@ -53,6 +55,7 @@ export function TaskEditPage({ taskId }: { taskId: number }) {
           description: task.description,
           status: task.status,
           priority: task.priority,
+          assignedToId:String(task.assignedToId?.id)  
         }}
         submitLabel="Save Changes"
         onSubmit={(values) => {
@@ -63,6 +66,7 @@ export function TaskEditPage({ taskId }: { taskId: number }) {
          // navigate({ name: 'task-detail', taskId })
         }}
         loading={loading}
+        allUsersData={allUsers}
         onCancel={() => navigate({ name: 'task-detail', taskId })}
         apiError={apiError}
       />
