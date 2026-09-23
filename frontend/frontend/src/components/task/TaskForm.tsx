@@ -5,6 +5,7 @@ import { Input, Textarea, FormField } from '../ui/Input'
 import { Select } from '../ui/Select'
 import { STATUS_OPTIONS, PRIORITY_OPTIONS } from '../../constants'
 import type { AllUsers, TaskFormValues, TaskPriority, TaskStatus } from '../../types'
+import { useApp } from '../../context/appContext'
 
 interface TaskFormProps {
   initialValues?: Partial<TaskFormValues>
@@ -21,7 +22,8 @@ const EMPTY_VALUES: TaskFormValues = {
   description: '',
   status: 'todo',
   priority: 'medium',
-  assignedToId : ''
+  assignedToId : '',
+  createdById :''
 
 }
 
@@ -40,6 +42,8 @@ export function TaskForm({
   })
   const [errors, setErrors] = useState<{ title?: string , description? : string}>({})
 
+  const {user} =useApp()
+
   const validate = (): boolean => {
     const nextErrors: { title?: string , description ? : string } = {}
     if (values.title.trim() === '') {
@@ -54,6 +58,8 @@ export function TaskForm({
     return Object.keys(nextErrors).length === 0
   }
 
+  console.log(user)
+
   const handleSubmit = () => {
     // Guard against double-submits (belt & braces; native `disabled`
     // already blocks clicks, this also protects programmatic calls).
@@ -64,7 +70,9 @@ export function TaskForm({
       description: values.description.trim(),
       status: values.status,
       priority: values.priority,
-      assignedToId : values.assignedToId
+      assignedToId : values.assignedToId,
+      createdById : user?.id
+      
     })
   }
 

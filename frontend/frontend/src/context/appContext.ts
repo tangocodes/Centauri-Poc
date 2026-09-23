@@ -20,6 +20,7 @@ export interface AppContextValue {
     status: Task['status']
     priority: Task['priority']
     assignedToId: string | undefined
+    createdById : string | undefined
   }) => void
   loading : boolean, 
   apiError : string,

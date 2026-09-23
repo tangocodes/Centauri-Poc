@@ -20,6 +20,7 @@
       return this.taskRepository.find(
         {relations: {
     assignedToId: true,
+    createdById : true
   },}
       );
     }
@@ -40,10 +41,25 @@
     description: string,
     status: string,
     priority: string,
-    assignedToId? : number | null
+    assignedToId? : number | null,
+    createdById? : number | null
+
   ): Promise<Task> {
+    let createdBy: User | null = null;
 
     let assignedTo: User | null = null;
+  console.log(createdById)
+    if (createdById) {
+      createdBy = await this.userRepository.findOne({
+        where: { id: createdById },
+      });
+
+      if (!createdBy) {
+        throw new NotFoundException(
+          `User with id ${createdById} not found`,
+        );
+      }
+    }
 
     if (assignedToId) {
       assignedTo = await this.userRepository.findOne({
@@ -56,12 +72,14 @@
         );
       }
     }
+    console.log(createdBy)
     const task = this.taskRepository.create({
       title,
       description,
       status,
       priority,
-      assignedToId:assignedTo
+      assignedToId:assignedTo,
+      createdById:createdBy
     });
 
     return this.taskRepository.save(task);
@@ -73,6 +91,19 @@
   ): Promise<Task> {
 
   let assignedTo: User | null = null;
+  let createdBy: User | null = null;
+
+   if (updates.createdById) {
+      createdBy = await this.userRepository.findOne({
+        where: { id: updates.createdById },
+      });
+
+      if (!createdBy) {
+        throw new NotFoundException(
+          `User with id ${updates.createdById} not found`,
+        );
+      }
+    }
 
     if (updates.assignedToId) {
       assignedTo = await this.userRepository.findOne({
@@ -87,7 +118,7 @@
     }
 
     
-    const task = await this.taskRepository.preload({id,...updates,assignedToId:assignedTo});
+    const task = await this.taskRepository.preload({id,...updates,assignedToId:assignedTo,createdById:createdBy});
 
     console.log(task);
     if(!task)

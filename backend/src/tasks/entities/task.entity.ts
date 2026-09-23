@@ -19,6 +19,9 @@ export class Task {
   @ManyToOne(() => User, { nullable: true }) // one user can have multiple tasks thats why manytoone
   assignedToId: User | null;
 
+  @ManyToOne(() => User, { nullable: true }) // one user can have multiple tasks thats why manytoone
+  createdById: User | null;
+
   @Column()
   priority: string;
 

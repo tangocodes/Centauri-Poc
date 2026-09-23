@@ -20,4 +20,8 @@ export class CreateTaskDto {
   @IsOptional()
   @IsInt()
   assignedToId?: number;
+
+  @IsOptional()
+  @IsInt()
+  createdById?: number;
 }

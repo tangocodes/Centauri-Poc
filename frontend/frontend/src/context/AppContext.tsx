@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
-import { type AllUsers, type Route, type Task, type ToastItem, type ToastType, type UserProfile } from '../types'
+import { type AllUsers, type Route, type Task, type TaskFormValues, type ToastItem, type ToastType, type UserProfile } from '../types'
 import { AppContext } from './appContext'
 
 
@@ -57,18 +57,22 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
 
 
-  const createTask = async (values: Partial<Task>) => {
+  const createTask = async (values : TaskFormValues) => {
 
+
+    console.log(values ,"Hmm values")
     try {
-
 
       const payload = {
         ...values,
+        createdById:  values.createdById
+          ? Number(values.createdById)
+          : undefined,
         assignedToId: values.assignedToId
           ? Number(values.assignedToId)
           : undefined,
+        
       }
-      console.log(payload)
       clearErrorState()
       setLoading(true)
       let response = await fetch(`${API_URL}/tasks/`,
@@ -197,13 +201,17 @@ export function AppProvider({ children }: { children: ReactNode }) {
   }
 
 
-  const editTaskFetch = async (id: number, values: Partial<Task>) => {
+  const editTaskFetch = async (id: number, values: TaskFormValues) => {
     try {
       const payload = {
         ...values,
+        createdById:  values.createdById
+          ? Number(values.createdById)
+          : undefined,
         assignedToId: values.assignedToId
           ? Number(values.assignedToId)
           : undefined,
+        
       }
       clearErrorState()
       setLoading(true)
@@ -425,13 +433,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
 
   //Edit or Create
-  const saveTask = useCallback(async (taskId: number | null, values: {
-    title: string
-    description: string
-    status: Task['status']
-    priority: Task['priority']
-    assignedToId: string | undefined
-  }) => {
+  const saveTask = useCallback(async (taskId: number | null, values: TaskFormValues) => {
 
 
     if (taskId == null) {

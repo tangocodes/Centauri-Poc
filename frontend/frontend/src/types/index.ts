@@ -32,6 +32,7 @@ export interface Task {
   createdAt: string
   updatedAt: string
   assignedToId : AllUsers | null
+  createdById : AllUsers | null
 }
 
 export interface UserProfile {
@@ -69,10 +70,11 @@ export type Route =
 
 export interface TaskFormValues {
   title: string
-description: string
+  description: string
   status: TaskStatus
   priority: TaskPriority
   assignedToId : string | undefined
+  createdById : string | undefined
 }
 
 export type ToastType = 'success' | 'error' | 'info'

@@ -30,9 +30,6 @@ export class UsersService {
 
         return { name: userCreate.name, id: userCreate.id, message: "User Created Succefully" }
 
-
-
-
     }
 
 

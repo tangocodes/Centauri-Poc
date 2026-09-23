@@ -144,14 +144,14 @@ export function TaskDetailPage({ taskId }: { taskId: number }) {
               </span>
             </span>
             <span className="person-chip">
-              {/* <Avatar name={task.createdBy} color={avatarColor(task.createdBy)} size="sm" /> */}
+           {task.createdById && <Avatar name={task.createdById?.name} color={avatarColor(task.createdById?.name)} size="sm" />}   
               <span>
-                {/* <strong>{task.createdBy}</strong> */}
+                <strong>{task.createdById?.name}</strong>
                 <small>Created by</small>
               </span>
             </span>
           </div>
-        </div>
+        </div>      
       </div>
 
       {/* <CommentSection taskId={task.id} comments={task.comments} /> */}
