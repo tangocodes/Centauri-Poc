@@ -1,6 +1,6 @@
 import { PageHeader } from '../components/ui/PageHeader'
-import { Button, IconButton } from '../components/ui/Button'
-import { Icon } from '../components/ui/Icon'
+import { Button } from '../components/ui/Button'
+import { BackButton } from '../components/ui/BackButton'
 import { ErrorState } from '../components/ui/ErrorState'
 import { TaskForm } from '../components/task/TaskForm'
 import { useApp } from '../context/appContext'
@@ -35,14 +35,10 @@ export function TaskEditPage({ taskId }: { taskId: number }) {
   return (
     <div className="page-stack">
       
-      <IconButton
-        label="Back to task"
-        size="sm"
-        
+      <BackButton
+        label="Back"
         onClick={() => navigate({ name: 'task-detail', taskId })}
-      >
-        <Icon name="chevronLeft"  size={18} /> 
-      </IconButton>
+      />
 
       <PageHeader
         title="Edit Task"

@@ -1,5 +1,6 @@
 import {  useState } from 'react'
-import { Button, IconButton } from '../components/ui/Button'
+import { Button } from '../components/ui/Button'
+import { BackButton } from '../components/ui/BackButton'
 import { Icon } from '../components/ui/Icon'
 import { Avatar } from '../components/ui/Avatar'
 import { StatusBadge } from '../components/ui/StatusBadge'
@@ -53,9 +54,7 @@ export function TaskDetailPage({ taskId }: { taskId: number }) {
  
   return (
     <div className="page-stack">
-      <IconButton label="Back to tasks" size="sm" onClick={() => navigate({ name: 'tasks' })}>
-        <Icon name="chevronLeft" size={18} />
-      </IconButton>
+      <BackButton label="Back" onClick={() => navigate({ name: 'tasks' })} />
 
       <div className="card detail-card">
         <div className="detail-top">

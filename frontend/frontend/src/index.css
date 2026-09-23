@@ -1156,6 +1156,12 @@ a {
   gap: 22px;
 }
 
+/* Keeps a back button hugging the left edge instead of stretching to the
+   full width of the column (which would centre the icon). */
+.page-back {
+  align-self: flex-start;
+}
+
 .greeting-title {
   font-size: 24px;
   font-weight: 700;

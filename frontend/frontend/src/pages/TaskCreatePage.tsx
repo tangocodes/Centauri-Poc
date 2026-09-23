@@ -1,6 +1,5 @@
 import { PageHeader } from '../components/ui/PageHeader'
-import { IconButton } from '../components/ui/Button'
-import { Icon } from '../components/ui/Icon'
+import { BackButton } from '../components/ui/BackButton'
 import { TaskForm } from '../components/task/TaskForm'
 import { useApp } from '../context/appContext'
 import { useEffect } from 'react'
@@ -14,9 +13,7 @@ clearErrorState()
 
   return (
     <div className="page-stack">
-      <IconButton label="Back to tasks" size="sm" onClick={() => navigate({ name: 'tasks' })}>
-        <Icon name="chevronLeft" size={18} />
-      </IconButton>
+      <BackButton label="Back" onClick={() => navigate({ name: 'tasks' })} />
 
       <PageHeader
         title="New Task"
