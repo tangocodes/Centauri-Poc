@@ -81,7 +81,7 @@ export function TaskForm({
     label: 'Unassigned',
   },...allUsersData?.map((value) => ({
     value : String(value.id),
-    label: value.name,
+    label: `${value.name} - (${value.email})`,
   }))||[]]
 
   console.log(ASSIGNED_USERS,values )
