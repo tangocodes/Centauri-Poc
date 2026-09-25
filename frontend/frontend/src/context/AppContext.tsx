@@ -40,6 +40,13 @@ export function AppProvider({ children }: { children: ReactNode }) {
   }, [])
 
 
+  useEffect(()=>{
+
+    fetchTask()
+
+  },[userDetails])
+
+
   const handleUnauthorized = () => {
     localStorage.removeItem('access_token')
     setIsAuthenticated(false)
