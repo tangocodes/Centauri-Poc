@@ -1,9 +1,10 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity.js';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto.js';
 import * as bcrypt from 'bcrypt';
+import { updateUserDTO } from './dto/update-user.dto.js';
 
 @Injectable()
 export class UsersService {
@@ -52,9 +53,9 @@ export class UsersService {
                 name: user.name,
                 email: user.email,
                 joinedAt: user.createdAt,
-                department: "Product",
-                role: "Full Stack Developer",
-                bio: "Hey this is a static data will update"
+                department:user.department,
+                role: user.role,
+                bio: user.bio
             };
         }
         return user;
@@ -67,6 +68,20 @@ export class UsersService {
                 select: ['id', 'name', 'email'],  //rows you want
             }
         );
+    }
+
+
+    async updateUserDetails(details : updateUserDTO , id : number) : Promise<User> {
+
+        const user = await this.userRepository.preload({id , ...details});
+        
+            if(!user)
+            {
+              throw new NotFoundException("User not found")
+            }
+            
+            return this.userRepository.save(user);
+
     }
 
 }

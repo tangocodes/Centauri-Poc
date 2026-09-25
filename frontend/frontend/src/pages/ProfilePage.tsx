@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useEffectEvent, useState } from 'react'
 import { Button } from '../components/ui/Button'
 import { Icon } from '../components/ui/Icon'
 import { Input, FormField } from '../components/ui/Input'
@@ -6,6 +6,7 @@ import { Toggle } from '../components/ui/Toggle'
 import { Avatar } from '../components/ui/Avatar'
 import { useApp } from '../context/appContext'
 import { avatarColor, formatDate } from '../lib/format'
+import type { UpdateUserProfile, UserProfile } from '../types'
 
 // const TIMEZONES = [
 //   { value: 'America/New_York (UTC-05:00)', label: 'America/New_York (UTC-05:00)' },
@@ -15,12 +16,13 @@ import { avatarColor, formatDate } from '../lib/format'
 // ]
 
 export function ProfilePage() {
-  const { user, logout } = useApp()
+  const { user, logout, updateUserDetails } = useApp()
 
-  const [name, setName] = useState(user?.name)
-  const [email, setEmail] = useState(user?.email)
-  const [role, setRole] = useState(user?.role)
-  const [department, setDepartment] = useState(user?.department)
+  const [name, setName] = useState('')
+  const [email, setEmail] = useState('')
+  const [role, setRole] = useState('')
+  const [department, setDepartment] = useState('')
+  const [bio, setBio] = useState('')
   // const [timezone, setTimezone] = useState(user.timezone)
 
   const [emailNotifications, setEmailNotifications] = useState(true)
@@ -30,19 +32,33 @@ export function ProfilePage() {
 
   const save = () => {
     // TODO: replace with a real update-profile API call.
-    console.info('[POC] saveProfile placeholder — wire to API here.', {
-      name,
-      email,
-      role,
-      department,
-    })
+
+
+    const details: UpdateUserProfile = {
+      name: name,
+      role: role,
+      department: department,
+      bio: bio
+    }
+
+    updateUserDetails(details)
   }
+
+  useEffect(() => {
+    if (user) {
+      setName(user.name)
+      setEmail(user.email)
+      setRole(user.role)
+      setDepartment(user.department)
+      setBio(user.bio ?? '')
+    }
+  }, [user])
 
   return (
     <div className="page-stack">
       <div className="card profile-card">
         <div className="profile-head">
-         {user &&  <Avatar name={user?.name} color={avatarColor(user?.name)} size="lg" />}
+          {user && <Avatar name={user?.name} color={avatarColor(user?.name)} size="lg" />}
           <div className="profile-head-info">
             <h2 className="profile-name">{user?.name}</h2>
             <p className="profile-role">{user?.role} · {user?.department}</p>
@@ -57,7 +73,7 @@ export function ProfilePage() {
           </div>
           <div className="profile-stat">
             <Icon name="calendar" size={15} />
-            {user &&<span>Joined {formatDate(user.joinedAt)}</span>}
+            {user && <span>Joined {formatDate(user.joinedAt)}</span>}
           </div>
           {/* <div className="profile-stat">
             <Icon name="clock" size={15} />
@@ -94,6 +110,7 @@ export function ProfilePage() {
               id="profile-role"
               value={role}
               onChange={(event) => setRole(event.target.value)}
+              
             />
           </FormField>
           <FormField label="Department" htmlFor="profile-department">
@@ -101,6 +118,14 @@ export function ProfilePage() {
               id="profile-department"
               value={department}
               onChange={(event) => setDepartment(event.target.value)}
+            />
+          </FormField>
+
+          <FormField label="Bio" htmlFor="profile-bio">
+            <Input
+              id="profile-bio"
+              value={bio}
+              onChange={(event) => setBio(event.target.value)}
             />
           </FormField>
           {/* <FormField label="Timezone" htmlFor="profile-timezone">

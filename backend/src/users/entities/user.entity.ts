@@ -18,6 +18,16 @@ export class User {
   @CreateDateColumn()
   createdAt: Date;
 
+  @Column({ default: 'Product' })
+  department: string;
+
+  @Column({ default: 'Full Stack Developer' })
+  role: string;
+
+  @Column({ nullable: true })
+  bio: string;
+
+
   @UpdateDateColumn()
   updatedAt: Date;
 }

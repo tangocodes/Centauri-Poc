@@ -138,7 +138,7 @@ export function TaskDetailPage({ taskId }: { taskId: number }) {
             <span className="person-chip">
              {task.assignedToId && <Avatar name={task.assignedToId?.name} color={avatarColor(task.assignedToId?.name)} size="sm" /> } 
               <span>
-                <strong>{task.assignedToId?.name}</strong>
+                <strong>{task.assignedToId?.name ? task.assignedToId?.name : 'Not assigned'}</strong>
                 <small>Assigned to</small>
               </span>
             </span>

@@ -1,19 +1,31 @@
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { Button } from '../components/ui/Button'
 import { Icon } from '../components/ui/Icon'
 import { Avatar } from '../components/ui/Avatar'
 import { EmptyState } from '../components/ui/EmptyState'
+import { Select } from '../components/ui/Select'
 import { StatusBadge } from '../components/ui/StatusBadge'
 import { StatCard } from '../components/dashboard/StatCard'
 import { MyTasksPreview } from '../components/dashboard/MyTasksPreview'
 import { TaskDistribution } from '../components/dashboard/TaskDistribution'
+import { FilterChips } from '../components/task/FilterChips'
 import { useApp } from '../context/appContext'
-import { getTaskStats, sortByMostRecent } from '../lib/tasks'
+import {
+  EMPTY_FILTERS,
+  filterTasks,
+  getTaskStats,
+  isFilterActive,
+  sortByMostRecent,
+} from '../lib/tasks'
 import { avatarColor, formatDate } from '../lib/format'
-import type { Task } from '../types'
+import { PRIORITY_OPTIONS, STATUS_OPTIONS } from '../constants'
+import type { Task, TaskFilters, TaskPriority, TaskStatus } from '../types'
 
 /** Rows surfaced in the dashboard preview lists. */
 const PREVIEW_LIMIT = 5
+
+const MY_TASK_STATUS_OPTIONS = [{ value: 'all', label: 'All statuses' }, ...STATUS_OPTIONS]
+const MY_TASK_PRIORITY_OPTIONS = [{ value: 'all', label: 'All priorities' }, ...PRIORITY_OPTIONS]
 
 function greeting(): string {
   const hour = new Date().getHours()
@@ -30,6 +42,14 @@ function isAssignedToMe(task: Task, userId: string | undefined): boolean {
 
 export function DashboardPage() {
   const { user, tasks, navigate } = useApp()
+  // Search is unused here: the Dashboard preview only filters by status/priority.
+  const [filters, setFilters] = useState<TaskFilters>(EMPTY_FILTERS)
+
+  /** Every task assigned to the logged-in user, newest first. */
+  const assignedTasks = useMemo(
+    () => sortByMostRecent(tasks.filter((task) => isAssignedToMe(task, user?.id))),
+    [tasks, user],
+  )
 
   // Every number below is derived from the tasks already held in AppContext.
   const stats = useMemo(() => {
@@ -38,17 +58,17 @@ export function DashboardPage() {
       total,
       inProgress,
       completed,
-      assignedToMe: tasks.filter((task) => isAssignedToMe(task, user?.id)).length,
+      // Deliberately unfiltered: the summary card counts all of my tasks.
+      assignedToMe: assignedTasks.length,
     }
-  }, [tasks, user])
+  }, [tasks, assignedTasks])
 
+  const filtersActive = isFilterActive(filters)
+
+  /** Assignee first, then the status/priority filter, then the cap. */
   const myTasks = useMemo(
-    () =>
-      sortByMostRecent(tasks.filter((task) => isAssignedToMe(task, user?.id))).slice(
-        0,
-        PREVIEW_LIMIT,
-      ),
-    [tasks, user],
+    () => filterTasks(assignedTasks, filters).slice(0, PREVIEW_LIMIT),
+    [assignedTasks, filters],
   )
 
   const distribution = useMemo(() => {
@@ -125,9 +145,35 @@ export function DashboardPage() {
             </Button>
           </div>
 
+          <div className="dash-filters">
+            <Select
+              aria-label="Filter my tasks by status"
+              value={filters.status}
+              onChange={(event) =>
+                setFilters({ ...filters, status: event.target.value as TaskStatus | 'all' })
+              }
+              options={MY_TASK_STATUS_OPTIONS}
+            />
+            <Select
+              aria-label="Filter my tasks by priority"
+              value={filters.priority}
+              onChange={(event) =>
+                setFilters({ ...filters, priority: event.target.value as TaskPriority | 'all' })
+              }
+              options={MY_TASK_PRIORITY_OPTIONS}
+            />
+          </div>
+
+          {/* Applied filters are echoed as chips and can be cleared individually. */}
+          <FilterChips filters={filters} onChange={setFilters} showSearchChip={false} />
+
           <MyTasksPreview
             tasks={myTasks}
             onView={(taskId) => navigate({ name: 'task-detail', taskId })}
+            emptyTitle={filtersActive && assignedTasks.length > 0 ? 'No matching tasks' : undefined}
+            emptyDescription={
+              filtersActive && assignedTasks.length > 0 ? 'Try changing your filters.' : undefined
+            }
           />
         </article>
 

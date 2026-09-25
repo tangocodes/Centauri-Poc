@@ -19,12 +19,6 @@ export function TasksPage() {
   const [page, setPage] = useState(1)
   const [deleteTargetId, setDeleteTargetId] = useState<number | null>(null)
 
-
-  console.log(tasks)
- 
-
- 
-
   // Reset to the first page whenever the filters change.
   const changeFilters = (next: TaskFiltersType) => {
     setPage(1)
@@ -63,12 +57,8 @@ export function TasksPage() {
         }
       />
 
-    { loading ? (
-       <TaskFilters filters={filters} onChange={changeFilters} />
-
-    ):
-    <></>
-    } 
+      {/* Always available — search, status/priority selects and the applied chips. */}
+      <TaskFilters filters={filters} onChange={changeFilters} />
 
       {loading ? (
         <div className="card">

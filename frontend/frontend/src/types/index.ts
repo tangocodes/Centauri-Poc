@@ -36,13 +36,20 @@ export interface Task {
 }
 
 export interface UserProfile {
-  id: string
-  name: string
-  email: string
+  id: string 
+  name: string 
+  email: string 
   role: string
   department: string
   bio: string
   joinedAt: string
+}
+
+export interface UpdateUserProfile {
+  name: string | undefined 
+role: string | undefined
+  department: string | undefined
+  bio: string | undefined
 }
 
 

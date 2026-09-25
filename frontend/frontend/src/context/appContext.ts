@@ -1,5 +1,5 @@
 import { createContext, useContext } from 'react'
-import type { AllUsers, Route, Task, ToastItem, ToastType, UserProfile } from '../types'
+import type { AllUsers, Route, Task, ToastItem, ToastType, UpdateUserProfile, UserProfile } from '../types'
 
 export interface AppContextValue {
   route: Route
@@ -33,6 +33,7 @@ export interface AppContextValue {
 
   /** LOCAL-ONLY placeholder for the delete action. */
   deleteTask: (taskId: number) => void
+  updateUserDetails : (user : UpdateUserProfile) => void
 }
 
 export const AppContext = createContext<AppContextValue | null>(null)

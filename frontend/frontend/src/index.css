@@ -115,7 +115,7 @@ a {
 }
 
 .desktop-only {
-  display: initial;
+  display: block;
 }
 
 .mobile-only {
@@ -1406,6 +1406,56 @@ a {
   color: var(--text-400);
 }
 
+/* Compact, secondary filters inside the My Tasks card */
+.dash-filters {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.dash-filters .select-wrap {
+  min-width: 150px;
+}
+
+/* Dashboard cards are compact previews, so their empty state collapses to
+   roughly ONE preview row. The global `.empty-state` (56px padding + 56px icon,
+   centred) is ~236px tall — about 3-4 task rows — which leaves a hole in the
+   card when a filter matches nothing. */
+.dash-card .empty-state {
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-start;
+  text-align: left;
+  gap: 10px;
+  padding: 12px 8px;
+}
+
+/* Keep the icon at a fixed size and let the copy wrap onto its own line on
+   narrow cards instead of being squeezed into a one-word column. */
+.dash-card .empty-state-icon,
+.dash-card .empty-state-title,
+.dash-card .empty-state-description {
+  flex: 0 0 auto;
+}
+
+.dash-card .empty-state-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  margin-bottom: 0;
+  flex-shrink: 0;
+}
+
+.dash-card .empty-state-title {
+  font-size: 14px;
+}
+
+.dash-card .empty-state-description {
+  font-size: 12.5px;
+}
+
 /* Task distribution */
 .dist-stack {
   display: flex;
@@ -1509,6 +1559,67 @@ a {
   display: flex;
 }
 
+/* Filter bar = toolbar (search + selects) stacked above the applied chips */
+.task-filter-bar {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Applied filter chips (shared by All Tasks and the Dashboard card) */
+.filter-chips {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* Sits on top of `.badge`, only tightening the space taken by the remove btn */
+.filter-chip {
+  padding: 3px 4px 3px 10px;
+}
+
+.filter-chip-label {
+  max-width: 220px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.filter-chip-search {
+  background: var(--gray-100);
+  color: var(--gray-700);
+}
+
+.filter-chip-clear {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: inherit;
+  opacity: 0.65;
+  cursor: pointer;
+  transition:
+    background-color 0.15s,
+    opacity 0.15s;
+}
+
+.filter-chip-clear:not(:disabled):hover {
+  opacity: 1;
+  background: rgba(15, 23, 42, 0.12);
+}
+
+.filter-chip-clear:focus-visible {
+  outline: 2px solid rgba(37, 99, 235, 0.5);
+  outline-offset: 1px;
+  opacity: 1;
+}
+
 /* ────────────────────────────────────────────────────────────────────────────
    Task table & cards
    ──────────────────────────────────────────────────────────────────────────── */
@@ -1604,9 +1715,12 @@ a {
   gap: 2px;
 }
 
-/* Mobile task cards */
+/* Mobile task cards.
+   `display` is deliberately declared inside the mobile media query below, not
+   here: `.task-cards` has the same specificity as `.mobile-only`, so declaring
+   it here (later in the file) would beat `.mobile-only { display: none }` and
+   render both the desktop table and these cards at the same time. */
 .task-cards {
-  display: grid;
   grid-template-columns: 1fr;
   gap: 14px;
 }
@@ -2336,6 +2450,11 @@ a {
     display: block;
   }
 
+  /* The mobile card list is the one `.mobile-only` block that needs a grid. */
+  .mobile-only.task-cards {
+    display: grid;
+  }
+
   .login-brand {
     display: none;
   }
@@ -2426,6 +2545,15 @@ a {
   .dash-row-side {
     justify-content: flex-start;
   }
+
+  .dash-filters {
+    width: 100%;
+  }
+
+  .dash-filters .select-wrap {
+    flex: 1 1 40%;
+    min-width: 0;
+  }
 }
 
 @media (max-width: 420px) {
@@ -2442,6 +2570,10 @@ a {
 
   .detail-meta-grid {
     grid-template-columns: 1fr;
+  }
+
+  .dash-filters .select-wrap {
+    flex: 1 1 100%;
   }
 }
 

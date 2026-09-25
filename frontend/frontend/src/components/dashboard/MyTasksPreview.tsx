@@ -9,21 +9,22 @@ interface MyTasksPreviewProps {
   /** Tasks already filtered to the logged-in user and capped by the caller. */
   tasks: Task[]
   onView: (taskId: number) => void
+  emptyTitle?: string
+  emptyDescription?: string
 }
 
 /**
  * Compact, dashboard-only task preview. Intentionally lighter than the
  * All Tasks <TaskList /> so the Dashboard reads as an overview, not a table.
  */
-export function MyTasksPreview({ tasks, onView }: MyTasksPreviewProps) {
+export function MyTasksPreview({
+  tasks,
+  onView,
+  emptyTitle = 'No tasks assigned to you',
+  emptyDescription = 'Tasks assigned to you will show up here.',
+}: MyTasksPreviewProps) {
   if (tasks.length === 0) {
-    return (
-      <EmptyState
-        icon="inbox"
-        title="No tasks assigned to you"
-        description="Tasks assigned to you will show up here."
-      />
-    )
+    return <EmptyState icon="inbox" title={emptyTitle} description={emptyDescription} />
   }
 
   return (

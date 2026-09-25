@@ -31,9 +31,9 @@ export class AuthService {
                     name : user.name,
                     email : user.email,
                     joinedAt : user.createdAt,
-                    department : "Product",
-                    role : "Full Stack Developer",
-                    bio : "Hey this is a static data will update"
+                    department : user.department,
+                    role : user.role,
+                    bio : user.bio
                 }
               
 

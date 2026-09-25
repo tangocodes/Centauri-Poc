@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
-import { type AllUsers, type Route, type Task, type TaskFormValues, type ToastItem, type ToastType, type UserProfile } from '../types'
+import { type AllUsers, type Route, type Task, type TaskFormValues, type ToastItem, type ToastType, type UpdateUserProfile, type UserProfile } from '../types'
 import { AppContext } from './appContext'
 
 
@@ -418,6 +418,57 @@ export function AppProvider({ children }: { children: ReactNode }) {
   }
 
 
+   const updateUserData = async (values : UpdateUserProfile) => {
+
+
+    console.log(values ,"Hmm values")
+    try {
+
+      clearErrorState()
+      setLoading(true)
+      let response = await fetch(`${API_URL}/users/me`,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${getToken()}`
+
+          },
+          method: 'PATCH',
+          body: JSON.stringify(values)
+        })
+      if (response.ok) {
+
+        await response.json()
+        await getUserData()
+        showToast('Updated User Details successfully', 'success')
+        // setTimeout(() => {
+        //   setRoute({ name: 'tasks' })
+        // }, 2000)
+
+
+      }
+      if (response.status === 401) {
+        handleUnauthorized()
+        return
+      }
+      if (response.ok === false) {
+        setAPIError(`Request failed ${response.status}`)
+        throw new Error(`Request failed ${response.status}`)
+      }
+    }
+    catch (err) {
+      console.log(err)
+    }
+    finally {
+      setTimeout(() => {
+        setLoading(false)
+
+      }, 1000)
+    }
+
+  }
+
+
   // ── Mock "auth". Replace with your real login/logout implementation. ──────
   const login = useCallback((email: string, password: string) => {
 
@@ -430,6 +481,9 @@ export function AppProvider({ children }: { children: ReactNode }) {
     showToast("Hope you visit again!", "success")
     localStorage.removeItem('access_token')
   }, [])
+
+
+
 
 
   //Edit or Create
@@ -450,6 +504,12 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const deleteTask = useCallback((taskId: number) => {
     deleteTaskFetch(taskId)
   }, [])
+
+
+  const updateUserDetails = (data : UpdateUserProfile)=>{
+
+    updateUserData(data)
+  }
 
   // const addComment = 
   // useCallback((taskId: number, content: string) => {
@@ -490,6 +550,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
         logout,
         allUsers: allUserData,
         user: userDetails,
+        updateUserDetails,
         tasks,
         addComment,
         saveTask,
