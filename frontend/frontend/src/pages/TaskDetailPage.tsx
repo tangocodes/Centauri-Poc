@@ -11,6 +11,7 @@ import { Modal } from '../components/ui/Modal'
 import { useApp } from '../context/appContext'
 import { formatDateTime } from '../lib/format'
 import { avatarColor } from '../lib/format'
+import { CommentSection } from '../components/task/CommentSection'
 
 export function TaskDetailPage({ taskId }: { taskId: number }) {
 
@@ -153,7 +154,7 @@ export function TaskDetailPage({ taskId }: { taskId: number }) {
         </div>      
       </div>
 
-      {/* <CommentSection taskId={task.id} comments={task.comments} /> */}
+      <CommentSection taskId={task.id} />
 
       <Modal
         open={confirmDelete}

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
-import { type AllUsers, type Route, type Task, type TaskFormValues, type ToastItem, type ToastType, type UpdateUserProfile, type UserProfile } from '../types'
+import { type AllUsers, type Route, type Task, type TaskComment, type TaskCommentPost, type TaskFormValues, type ToastItem, type ToastType, type UpdateUserProfile, type UserProfile } from '../types'
 import { AppContext } from './appContext'
 
 
@@ -9,6 +9,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [route, setRoute] = useState<Route>({ name: 'login' })
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [tasks, setTasks] = useState<Task[]>([])
+  const [comments,setTaskComments] = useState<TaskComment[]>([])
   const [loading, setLoading] = useState(false)
   const [apiError, setAPIError] = useState("")
   const [toasts, setToasts] = useState<ToastItem[]>([])
@@ -476,7 +477,88 @@ export function AppProvider({ children }: { children: ReactNode }) {
   }
 
 
-  // ── Mock "auth". Replace with your real login/logout implementation. ──────
+  const addNewComment = async (values : TaskCommentPost) => {
+
+
+      try {
+
+      clearErrorState()
+      setLoading(true)
+      let response = await fetch(`${API_URL}/task-comments/`,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${getToken()}`
+          },
+          method: 'POST',
+          body: JSON.stringify(values)
+        })
+      if (response.ok) {
+        await response.json()
+        await getTaskComments(values.taskId)
+      }
+      if (response.status === 401) {
+        handleUnauthorized()
+        return
+      }
+      if (response.ok === false) {
+        setAPIError(`Request failed ${response.status}`)
+        throw new Error(`Request failed ${response.status}`)
+      }
+    }
+    catch (err) {
+      console.log(err)
+    }
+    finally {
+      setTimeout(() => 
+      {
+        setLoading(false)
+      }, 1000)
+    }
+
+  }
+
+
+  const getTaskComments = async(taskID: number) =>{
+      try {
+
+      clearErrorState()
+      setLoading(true)
+      let response = await fetch(`${API_URL}/task-comments/${taskID}`,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${getToken()}`
+          },
+          method: 'GET',
+        })
+      if (response.ok) {
+       const comments = await response.json()
+       setTaskComments(comments)
+
+      }
+      if (response.status === 401) {
+        handleUnauthorized()
+        return
+      }
+      if (response.ok === false) {
+        setAPIError(`Request failed ${response.status}`)
+        throw new Error(`Request failed ${response.status}`)
+      }
+    }
+    catch (err) {
+      console.log(err)
+    }
+    finally {
+      setTimeout(() => 
+      {
+        setLoading(false)
+      }, 1000)
+    }
+
+  }
+
+
   const login = useCallback((email: string, password: string) => {
 
     loginUser(email, password)
@@ -518,30 +600,19 @@ export function AppProvider({ children }: { children: ReactNode }) {
     updateUserData(data)
   }
 
-  // const addComment = 
-  // useCallback((taskId: number, content: string) => {
-  //   setTasks((prev) =>
-  //     prev.map((task) => {
-  //       if (task.id !== taskId) return task
-  //       return {
-  //         ...task,
-  //         updatedAt: new Date().toISOString(),
-  //         comments: [
-  //           ...task?.comments,
-  //           {
-  //             id: `local-${Date.now()}`,
-  //             author: currentUser.name,
-  //             role: currentUser.role,
-  //             content,
-  //             createdAt: new Date().toISOString(),
-  //           },
-  //         ],
-  //       }
-  //     }),
-  //   )
-  // }, [])
+  const addComment = 
+  useCallback((values : TaskCommentPost) => {
+    
+    addNewComment(values)
 
-  const addComment = () => { }
+  }, [])
+
+  const getComments = 
+  useCallback((taskId : number) => {
+
+    getTaskComments(taskId)
+  }, [])
+
 
 
 
@@ -559,7 +630,9 @@ export function AppProvider({ children }: { children: ReactNode }) {
         user: userDetails,
         updateUserDetails,
         tasks,
+        getComments,
         addComment,
+        taskComments : comments,
         saveTask,
         loading,
         deleteTask,

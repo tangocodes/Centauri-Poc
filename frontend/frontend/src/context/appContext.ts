@@ -1,5 +1,5 @@
 import { createContext, useContext } from 'react'
-import type { AllUsers, Route, Task, ToastItem, ToastType, UpdateUserProfile, UserProfile } from '../types'
+import type { AllUsers, Route, Task, TaskComment, TaskCommentPost, ToastItem, ToastType, UpdateUserProfile, UserProfile } from '../types'
 
 export interface AppContextValue {
   route: Route
@@ -10,9 +10,11 @@ export interface AppContextValue {
   logout: () => void
   user: UserProfile | null
   allUsers : AllUsers[] | null
+
   tasks: Task[]
-  /** LOCAL-ONLY placeholder for the add-comment UI. Replace with API later. */
-  addComment: (taskId: number, content: string) => void
+  taskComments : TaskComment[] | null
+getComments : (taskId : number) => void
+  addComment: (values : TaskCommentPost) => void
   /** LOCAL-ONLY placeholder hook point for create/edit forms. */
   saveTask: (taskId: number | null, values: {
     title: string

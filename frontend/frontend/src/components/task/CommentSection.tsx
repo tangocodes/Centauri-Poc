@@ -1,50 +1,61 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Button } from '../ui/Button'
 import { Textarea } from '../ui/Input'
 import { Avatar } from '../ui/Avatar'
 import { Icon } from '../ui/Icon'
 import { useApp } from '../../context/appContext'
 import { timeAgo, avatarColor } from '../../lib/format'
-import type { TaskComment } from '../../types'
+import type { TaskComment, TaskCommentPost } from '../../types'
 
 interface CommentSectionProps {
   taskId: number
-  comments: TaskComment[]
 }
 
-export function CommentSection({ taskId, comments }: CommentSectionProps) {
-  const { user, addComment } = useApp()
+export function CommentSection({ taskId }: CommentSectionProps) {
+  const { user, addComment,taskComments,getComments } = useApp()
   const [draft, setDraft] = useState('')
+
 
   const handleSubmit = () => {
     const content = draft.trim()
+
+    const value : TaskCommentPost = {
+      taskId : taskId,
+      content : content
+    }
     if (!content) return
-    addComment(taskId, content)
+    addComment(value)
     setDraft('')
   }
+
+  useEffect(()=>{
+   
+    getComments(taskId)
+
+  },[])
 
   return (
     <div className="card comments-card">
       <div className="comments-header">
         <h3 className="card-title">Comments</h3>
         <span className="comment-count">
-          {comments.length} {comments.length === 1 ? 'comment' : 'comments'}
+          {taskComments?.length} {taskComments?.length === 1 ? 'comment' : 'comments'}
         </span>
       </div>
 
       <div className="comments-list">
-        {comments.length === 0 && (
+        {taskComments?.length === 0 && (
           <p className="comments-empty">
             No comments yet. Start the discussion below.
           </p>
         )}
-        {comments.map((comment) => (
+        {taskComments?.map((comment) => (
           <div key={comment.id} className="comment">
-            <Avatar name={comment.author} color={avatarColor(comment.author)} size="sm" />
+            <Avatar name={comment.author.name} color={avatarColor(comment.author.name)} size="sm" />
             <div className="comment-body">
               <div className="comment-meta">
-                <span className="comment-author">{comment.author}</span>
-                <span className="comment-role">{comment.role}</span>
+                <span className="comment-author">{comment.author.name}</span>
+                <span className="comment-role">{comment.author.role}</span>
                 <span className="comment-time">{timeAgo(comment.createdAt)}</span>
               </div>
               <p className="comment-text">{comment.content}</p>
@@ -54,7 +65,7 @@ export function CommentSection({ taskId, comments }: CommentSectionProps) {
       </div>
 
       <div className="comment-composer">
-        {user &&<Avatar name={user?.name} color="#d42313" size="sm" />}
+        {user &&<Avatar name={user?.name} color={avatarColor(user?.name)} size="sm" />}
         <div className="comment-composer-input">
           <Textarea
             rows={2}

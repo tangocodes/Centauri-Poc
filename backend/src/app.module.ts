@@ -8,6 +8,7 @@ import { AppService } from './app.service.js'
 import { TasksModule } from './tasks/tasks.module.js'
 import { UsersModule } from './users/users.module.js'
 import { AuthModule } from './auth/auth.module.js'
+import { TaskCommentsModule } from './task-comments/task-comments.module.js';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { AuthModule } from './auth/auth.module.js'
     UsersModule,
     AuthModule,
     TasksModule,
+    TaskCommentsModule,
   ],
 
   controllers: [AppController],

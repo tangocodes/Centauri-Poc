@@ -4,11 +4,18 @@ export type TaskPriority = 'low' | 'medium' | 'high' | 'urgent'
 
 export interface TaskComment {
   id: number
-  author: string
-  role: string
+  author: UserProfile
+  task: Task
   content: string
   createdAt: string
 }
+
+export interface TaskCommentPost {
+  taskId : number,
+  content : string
+}
+
+
 
 export interface TaskMock {
   id: string
