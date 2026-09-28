@@ -5,7 +5,7 @@ import { Avatar } from '../ui/Avatar'
 import { Icon } from '../ui/Icon'
 import { useApp } from '../../context/appContext'
 import { timeAgo, avatarColor } from '../../lib/format'
-import type { TaskComment, TaskCommentPost } from '../../types'
+import type {  TaskCommentPost } from '../../types'
 
 interface CommentSectionProps {
   taskId: number
@@ -49,19 +49,27 @@ export function CommentSection({ taskId }: CommentSectionProps) {
             No comments yet. Start the discussion below.
           </p>
         )}
-        {taskComments?.map((comment) => (
-          <div key={comment.id} className="comment">
-            <Avatar name={comment.author.name} color={avatarColor(comment.author.name)} size="sm" />
-            <div className="comment-body">
-              <div className="comment-meta">
-                <span className="comment-author">{comment.author.name}</span>
-                <span className="comment-role">{comment.author.role}</span>
-                <span className="comment-time">{timeAgo(comment.createdAt)}</span>
+        {taskComments?.map((comment) => {
+          const isOwn = String(comment.author?.id ?? '') === String(user?.id ?? '')
+          return (
+            <div
+              key={comment.id}
+              className={`comment${isOwn ? ' comment--own' : ''}`}
+            >
+              <Avatar name={comment.author.name} color={avatarColor(comment.author.name)} size="sm" />
+              <div className="comment-body">
+                <div className="comment-meta">
+                  <span className="comment-author">
+                    {isOwn ? 'You' : comment.author.name}
+                  </span>
+                  {!isOwn && <span className="comment-role">{comment.author.role}</span>}
+                  <span className="comment-time">{timeAgo(comment.createdAt)}</span>
+                </div>
+                <p className="comment-text">{comment.content}</p>
               </div>
-              <p className="comment-text">{comment.content}</p>
             </div>
-          </div>
-        ))}
+          )
+        })}
       </div>
 
       <div className="comment-composer">

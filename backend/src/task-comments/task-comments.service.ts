@@ -73,6 +73,10 @@ export class TaskCommentsService {
             relations :{
                 task : true,
                 author : true
+            },
+            order :{
+                createdAt : 'ASC',
+                id : 'ASC'
             }
           })
 

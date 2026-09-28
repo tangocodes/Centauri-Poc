@@ -119,7 +119,7 @@ export function TaskForm({
           <Textarea
             id="task-description"
             name="description"
-            rows={5}
+            rows={3}
             placeholder="Add a short description of the task…"
             value={values.description}
             invalid={Boolean(errors.description)}

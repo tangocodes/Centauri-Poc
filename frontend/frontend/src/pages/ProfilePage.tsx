@@ -1,4 +1,4 @@
-import { useEffect, useEffectEvent, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Button } from '../components/ui/Button'
 import { Icon } from '../components/ui/Icon'
 import { Input, FormField } from '../components/ui/Input'
@@ -6,7 +6,7 @@ import { Toggle } from '../components/ui/Toggle'
 import { Avatar } from '../components/ui/Avatar'
 import { useApp } from '../context/appContext'
 import { avatarColor, formatDate } from '../lib/format'
-import type { UpdateUserProfile, UserProfile } from '../types'
+import type { UpdateUserProfile } from '../types'
 
 // const TIMEZONES = [
 //   { value: 'America/New_York (UTC-05:00)', label: 'America/New_York (UTC-05:00)' },

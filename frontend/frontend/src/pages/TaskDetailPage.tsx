@@ -57,104 +57,108 @@ export function TaskDetailPage({ taskId }: { taskId: number }) {
     <div className="page-stack">
       <BackButton label="Back" onClick={() => navigate({ name: 'tasks' })} />
 
-      <div className="card detail-card">
-        <div className="detail-top">
-          <div className="detail-title-row">
-            <h2 className="detail-title">{task?.title}</h2>
-            <div className="detail-badges">
-              <StatusBadge status={task?.status} />
-              <PriorityBadge priority={task?.priority} />
-            </div>
-          </div>
-
-          <div className="detail-actions">
-            <Button
-              variant="secondary"
-              size="sm"
-              onClick={() => navigate({ name: 'edit-task', taskId })}
-            >
-              <Icon name="edit" size={15} />
-              Edit
-            </Button>
-            <Button variant="danger" size="sm" onClick={() => setConfirmDelete(true)}>
-              <Icon name="trash" size={15} />
-              Delete
-            </Button>
-          </div>
-        </div>
-
-        <div className="detail-meta-grid">
-          <div className="meta-item">
-            <span className="meta-item-icon">
-              <Icon name="checkCircle" size={16} />
-            </span>
-            <div>
-              <span className="meta-item-label">Status</span>
-              <span className="meta-item-value">
+      <div className="detail-layout">
+        <div className="card detail-card">
+          <div className="detail-top">
+            <div className="detail-title-row">
+              <h2 className="detail-title">{task?.title}</h2>
+              <div className="detail-badges">
                 <StatusBadge status={task?.status} />
-              </span>
-            </div>
-          </div>
-          <div className="meta-item">
-            <span className="meta-item-icon">
-              <Icon name="flag" size={16} />
-            </span>
-            <div>
-              <span className="meta-item-label">Priority</span>
-              <span className="meta-item-value">
                 <PriorityBadge priority={task?.priority} />
+              </div>
+            </div>
+
+            <div className="detail-actions">
+              <Button
+                variant="secondary"
+                size="sm"
+                onClick={() => navigate({ name: 'edit-task', taskId })}
+              >
+                <Icon name="edit" size={15} />
+                Edit
+              </Button>
+              <Button variant="danger" size="sm" onClick={() => setConfirmDelete(true)}>
+                <Icon name="trash" size={15} />
+                Delete
+              </Button>
+            </div>
+          </div>
+
+          <div className="detail-meta-grid">
+            <div className="meta-item">
+              <span className="meta-item-icon">
+                <Icon name="checkCircle" size={16} />
+              </span>
+              <div>
+                <span className="meta-item-label">Status</span>
+                <span className="meta-item-value">
+                  <StatusBadge status={task?.status} />
+                </span>
+              </div>
+            </div>
+            <div className="meta-item">
+              <span className="meta-item-icon">
+                <Icon name="flag" size={16} />
+              </span>
+              <div>
+                <span className="meta-item-label">Priority</span>
+                <span className="meta-item-value">
+                  <PriorityBadge priority={task?.priority} />
+                </span>
+              </div>
+            </div>
+            <div className="meta-item">
+              <span className="meta-item-icon">
+                <Icon name="calendar" size={16} />
+              </span>
+              <div>
+                <span className="meta-item-label">Created</span>
+                <span className="meta-item-value">{formatDateTime(task.createdAt)}</span>
+              </div>
+            </div>
+            <div className="meta-item">
+              <span className="meta-item-icon">
+                <Icon name="clock" size={16} />
+              </span>
+              <div>
+                <span className="meta-item-label">Last updated</span>
+                <span className="meta-item-value">{formatDateTime(task.updatedAt)}</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="detail-section">
+            <h3 className="detail-section-title">Description</h3>
+            <p className="detail-description">
+              {task.description || 'No description provided for this task.'}
+            </p>
+          </div>
+
+          <div className="detail-section">
+            <h3 className="detail-section-title">People</h3>
+            <div className="detail-people">
+              <span className="person-chip">
+               {task.assignedToId && <Avatar name={task.assignedToId?.name} color={avatarColor(task.assignedToId?.name)} size="sm" /> } 
+                <span>
+                  <strong>{task.assignedToId?.name ? task.assignedToId?.name : 'Not assigned'}</strong>
+                  <small>Assigned to</small>
+                </span>
+              </span>
+              <span className="person-chip">
+             {task.createdById && <Avatar name={task.createdById?.name} color={avatarColor(task.createdById?.name)} size="sm" />}   
+                <span>
+                  <strong>{task.createdById?.name}</strong>
+                  <small>Created by</small>
+                </span>
               </span>
             </div>
-          </div>
-          <div className="meta-item">
-            <span className="meta-item-icon">
-              <Icon name="calendar" size={16} />
-            </span>
-            <div>
-              <span className="meta-item-label">Created</span>
-              <span className="meta-item-value">{formatDateTime(task.createdAt)}</span>
-            </div>
-          </div>
-          <div className="meta-item">
-            <span className="meta-item-icon">
-              <Icon name="clock" size={16} />
-            </span>
-            <div>
-              <span className="meta-item-label">Last updated</span>
-              <span className="meta-item-value">{formatDateTime(task.updatedAt)}</span>
-            </div>
-          </div>
+          </div>      
         </div>
 
-        <div className="detail-section">
-          <h3 className="detail-section-title">Description</h3>
-          <p className="detail-description">
-            {task.description || 'No description provided for this task.'}
-          </p>
+        <div className="detail-comments">
+          <CommentSection taskId={task.id} />
         </div>
-
-        <div className="detail-section">
-          <h3 className="detail-section-title">People</h3>
-          <div className="detail-people">
-            <span className="person-chip">
-             {task.assignedToId && <Avatar name={task.assignedToId?.name} color={avatarColor(task.assignedToId?.name)} size="sm" /> } 
-              <span>
-                <strong>{task.assignedToId?.name ? task.assignedToId?.name : 'Not assigned'}</strong>
-                <small>Assigned to</small>
-              </span>
-            </span>
-            <span className="person-chip">
-           {task.createdById && <Avatar name={task.createdById?.name} color={avatarColor(task.createdById?.name)} size="sm" />}   
-              <span>
-                <strong>{task.createdById?.name}</strong>
-                <small>Created by</small>
-              </span>
-            </span>
-          </div>
-        </div>      
       </div>
-
-      <CommentSection taskId={task.id} />
 
       <Modal
         open={confirmDelete}

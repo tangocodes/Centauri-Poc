@@ -1905,6 +1905,31 @@ a {
 /* ────────────────────────────────────────────────────────────────────────────
    Task detail
    ──────────────────────────────────────────────────────────────────────────── */
+/* Two-column Task Details: task information on the left, discussion on the right. */
+.detail-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+  gap: 20px;
+  align-items: stretch;
+}
+
+.detail-layout > * {
+  min-width: 0;
+}
+
+/* The comments column tracks the Task Details height. Its content cannot
+   stretch the grid row, and the card fills the cell exactly, so the header
+   and the composer stay put while only the thread scrolls. */
+.detail-comments {
+  position: relative;
+  min-height: 480px;
+}
+
+.detail-comments > .comments-card {
+  position: absolute;
+  inset: 0;
+}
+
 .detail-card {
   padding: 26px;
   display: flex;
@@ -2038,52 +2063,90 @@ a {
    Comments
    ──────────────────────────────────────────────────────────────────────────── */
 .comments-card {
-  padding: 22px 24px;
+  padding: 18px 20px;
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 14px;
 }
 
 .comments-header {
   display: flex;
   align-items: center;
   gap: 10px;
+  flex-shrink: 0;
 }
 
 .comment-count {
-  font-size: 12.5px;
+  font-size: 12px;
   font-weight: 600;
   color: var(--primary-600);
   background: var(--primary-50);
-  padding: 3px 10px;
+  padding: 2px 9px;
   border-radius: 999px;
 }
 
+/* Only the thread scrolls; the header and the composer stay pinned. */
 .comments-list {
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 10px;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding-right: 6px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-strong) transparent;
+}
+
+.comments-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.comments-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.comments-list::-webkit-scrollbar-thumb {
+  background: var(--border-strong);
+  border-radius: 999px;
+}
+
+.comments-list::-webkit-scrollbar-thumb:hover {
+  background: var(--text-400);
 }
 
 .comments-empty {
-  font-size: 14px;
+  font-size: 13.5px;
   color: var(--text-400);
-  padding: 8px 0;
+  padding: 6px 0;
 }
 
 .comment {
   display: flex;
-  gap: 12px;
+  gap: 10px;
   align-items: flex-start;
+}
+
+/* Own comments sit on the right with a tinted bubble, chat-style. */
+.comment--own {
+  flex-direction: row-reverse;
 }
 
 .comment-body {
   background: var(--surface-2);
   border: 1px solid var(--border);
   border-radius: 12px;
-  padding: 10px 14px;
-  flex: 1;
+  padding: 8px 12px;
+  /* Size to the content instead of stretching, capped at 80% so short
+     comments stay compact and long ones wrap into a readable bubble. */
+  max-width: 80%;
   min-width: 0;
+}
+
+.comment--own .comment-body {
+  background: var(--primary-50);
+  border-color: var(--primary-100);
 }
 
 .comment-meta {
@@ -2091,46 +2154,56 @@ a {
   align-items: center;
   gap: 8px;
   flex-wrap: wrap;
-  margin-bottom: 4px;
+  margin-bottom: 3px;
 }
 
 .comment-author {
-  font-size: 13.5px;
+  font-size: 13px;
   font-weight: 600;
   color: var(--text-900);
 }
 
+.comment--own .comment-author {
+  color: var(--primary-700);
+}
+
 .comment-role {
-  font-size: 12px;
+  font-size: 11.5px;
   color: var(--text-400);
 }
 
 .comment-time {
-  font-size: 12px;
+  font-size: 11.5px;
   color: var(--text-400);
   margin-left: auto;
 }
 
 .comment-text {
-  font-size: 14px;
+  font-size: 13.5px;
   color: var(--text-700);
-  line-height: 1.6;
+  line-height: 1.5;
+  overflow-wrap: break-word;
 }
 
 .comment-composer {
   display: flex;
-  gap: 12px;
+  gap: 10px;
   align-items: flex-start;
   border-top: 1px solid var(--border);
-  padding-top: 16px;
+  padding-top: 12px;
+  flex-shrink: 0;
 }
 
 .comment-composer-input {
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
   min-width: 0;
+}
+
+.comment-composer .textarea {
+  min-height: 62px;
 }
 
 .comment-composer-actions {
@@ -2142,23 +2215,31 @@ a {
    Forms
    ──────────────────────────────────────────────────────────────────────────── */
 .form-card {
-  padding: 24px;
+  padding: 18px;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 14px;
 }
 
 .form-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 18px;
+  gap: 12px;
+}
+
+/* Keep the task form compact so the page fits without scrolling. */
+.form-card .form-field {
+  gap: 4px;
+}
+
+.form-card .textarea {
+  min-height: 72px;
 }
 
 .form-actions {
   display: flex;
   justify-content: flex-end;
   gap: 10px;
-  margin-top: 4px;
 }
 
 .form-alert {
@@ -2439,6 +2520,34 @@ a {
   .header {
     padding: 12px 20px;
   }
+
+  /* Tablet/mobile: stack Task Details above Comments and let the thread grow
+     with the page instead of scrolling inside a fixed-height card. */
+  .detail-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .detail-comments {
+    position: static;
+    min-height: 0;
+  }
+
+  .detail-comments > .comments-card {
+    position: static;
+  }
+
+  .comments-list {
+    flex: none;
+    overflow-y: visible;
+    padding-right: 0;
+  }
+}
+
+@media (min-width: 1024px) {
+  /* The card sits in a ~60% column now, so give each meta field more room. */
+  .detail-layout .detail-meta-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
 @media (max-width: 767px) {
@@ -2512,6 +2621,11 @@ a {
 
   .comments-card {
     padding: 18px;
+  }
+
+  /* On smaller screens let bubbles use the full width so text stays readable. */
+  .comment-body {
+    max-width: 100%;
   }
 
   .stat-value {
