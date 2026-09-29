@@ -3,10 +3,11 @@ import type { ReactNode } from 'react'
 import { type AllUsers, type Notification, type Route, type Task, type TaskComment, type TaskCommentPost, type TaskFormValues, type ToastItem, type ToastType, type UpdateUserProfile, type UserProfile } from '../types'
 import { NOTIFICATION_POLL_MS, deleteNotification, fetchNotifications, markNotificationRead, sortByNewest } from '../lib/notifications'
 import { AppContext } from './appContext'
+import { apiConstant } from '../api/apiConstants'
 
 
 export function AppProvider({ children }: { children: ReactNode }) {
-  const API_URL = import.meta.env.VITE_API_URL
+  // const API_URL = import.meta.env.VITE_API_URL
   const [route, setRoute] = useState<Route>({ name: 'login' })
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [tasks, setTasks] = useState<Task[]>([])
@@ -83,12 +84,11 @@ export function AppProvider({ children }: { children: ReactNode }) {
           ? Number(values.assignedToId)
           : undefined,
         lastUpdatedById : values.lastUpdatedById ? Number(values.lastUpdatedById) : undefined
-
         
       }
       clearErrorState()
       setLoading(true)
-      let response = await fetch(`${API_URL}/tasks/`,
+      let response = await fetch(apiConstant.TASKS.CREATE_TASK,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -137,7 +137,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     try {
       clearErrorState()
       setLoading(true)
-      let response = await fetch(`${API_URL}/tasks/${id}`,
+      let response = await fetch(apiConstant.TASKS.DELETE_TASK_BY_ID(id),
         {
           headers: {
             'Content-Type': 'application/json',
@@ -179,7 +179,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     try {
       clearErrorState()
       setLoading(true)
-      let response = await fetch(`${API_URL}/tasks/`, {
+      let response = await fetch(apiConstant.TASKS.GET_ALL_TASKS, {
         headers: {
           'Authorization': `Bearer ${getToken()}`
 
@@ -230,7 +230,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       }
       clearErrorState()
       setLoading(true)
-      let response = await fetch(`${API_URL}/tasks/${id}`,
+      let response = await fetch(apiConstant.TASKS.EDIT_TASK_BY_ID(id),
         {
           headers: {
             'Content-Type': 'application/json',
@@ -276,7 +276,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
     const details = { email, password }
     try {
-      const response = await fetch(`${API_URL}/login`, {
+      const response = await fetch(apiConstant.AUTH.LOGIN_USER, {
         method: "POST",
         headers: {
           'Content-Type': 'application/json',
@@ -319,7 +319,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
     const details = { name, email, password }
     try {
-      const response = await fetch(`${API_URL}/users`, {
+      const response = await fetch(apiConstant.AUTH.SIGN_UP, {
         method: "POST",
         headers: {
           'Content-Type': 'application/json',
@@ -358,7 +358,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     const access_token = getToken()
     if (access_token) {
       try {
-        const response = await fetch(`${API_URL}/users/me`, {
+        const response = await fetch(apiConstant.AUTH.GET_USER_DATA, {
           method: "GET",
           headers: {
             'Content-Type': 'application/json',
@@ -395,7 +395,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     const access_token = getToken()
     if (access_token) {
       try {
-        const response = await fetch(`${API_URL}/users/`, {
+        const response = await fetch(apiConstant.AUTH.GET_ALL_USERS_DATA, {
           method: "GET",
           headers: {
             'Content-Type': 'application/json',
@@ -435,7 +435,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
       clearErrorState()
       setLoading(true)
-      let response = await fetch(`${API_URL}/users/me`,
+      let response = await fetch(apiConstant.AUTH.UPDATE_USER_DATA,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -485,7 +485,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
       clearErrorState()
       setLoading(true)
-      let response = await fetch(`${API_URL}/task-comments/`,
+      let response = await fetch(apiConstant.COMMENTS.ADD_NEW_COMMENT,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -525,7 +525,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
       clearErrorState()
       setLoading(true)
-      let response = await fetch(`${API_URL}/task-comments/${taskID}`,
+      let response = await fetch(apiConstant.COMMENTS.GET_COMMENTS_BY_TASKID(taskID),
         {
           headers: {
             'Content-Type': 'application/json',
