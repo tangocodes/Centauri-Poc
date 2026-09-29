@@ -151,6 +151,13 @@ export function TaskDetailPage({ taskId }: { taskId: number }) {
                   <small>Created by</small>
                 </span>
               </span>
+               <span className="person-chip">
+             {task.lastUpdatedBy && <Avatar name={task.lastUpdatedBy?.name} color={avatarColor(task.lastUpdatedBy?.name)} size="sm" />}   
+                <span>
+                  <strong>{task.lastUpdatedBy?.name}</strong>
+                  <small>Last Updated by</small>
+                </span>
+              </span>
             </div>
           </div>      
         </div>

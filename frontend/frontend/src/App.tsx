@@ -9,6 +9,7 @@ import { TaskCreatePage } from './pages/TaskCreatePage'
 import { TaskEditPage } from './pages/TaskEditPage'
 import { TaskDetailPage } from './pages/TaskDetailPage'
 import { ProfilePage } from './pages/ProfilePage'
+import { NotificationsPage } from './pages/NotificationsPage'
 
 function Router() {
   const { route } = useApp()
@@ -60,6 +61,12 @@ function Router() {
       return (
         <AppLayout>
           <ProfilePage />
+        </AppLayout>
+      )
+    case 'notifications':
+      return (
+        <AppLayout>
+          <NotificationsPage />
         </AppLayout>
       )
     case 'login':

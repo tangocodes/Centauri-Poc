@@ -1,5 +1,5 @@
 import { createContext, useContext } from 'react'
-import type { AllUsers, Route, Task, TaskComment, TaskCommentPost, ToastItem, ToastType, UpdateUserProfile, UserProfile } from '../types'
+import type { AllUsers, Notification, Route, Task, TaskComment, TaskCommentPost, ToastItem, ToastType, UpdateUserProfile, UserProfile } from '../types'
 
 export interface AppContextValue {
   route: Route
@@ -23,6 +23,7 @@ getComments : (taskId : number) => void
     priority: Task['priority']
     assignedToId: string | undefined
     createdById : string | undefined
+    lastUpdatedById:string | undefined
   }) => void
   loading : boolean, 
   apiError : string,
@@ -36,6 +37,15 @@ getComments : (taskId : number) => void
   /** LOCAL-ONLY placeholder for the delete action. */
   deleteTask: (taskId: number) => void
   updateUserDetails : (user : UpdateUserProfile) => void
+
+  /** Notifications served by the Notification microservice (JWT-scoped). */
+  notifications: Notification[]
+  notificationsLoading: boolean
+  notificationsError: string
+  getNotifications: () => void
+  markNotificationAsRead: (id: number) => void
+  markAllNotificationsAsRead: () => void
+  removeNotification: (id: number) => void
 }
 
 export const AppContext = createContext<AppContextValue | null>(null)

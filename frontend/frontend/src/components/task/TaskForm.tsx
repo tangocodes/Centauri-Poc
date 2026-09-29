@@ -23,7 +23,8 @@ const EMPTY_VALUES: TaskFormValues = {
   status: 'todo',
   priority: 'medium',
   assignedToId : '',
-  createdById :''
+  createdById :'',
+  lastUpdatedById:''
 
 }
 
@@ -71,8 +72,8 @@ export function TaskForm({
       status: values.status,
       priority: values.priority,
       assignedToId : values.assignedToId,
-      createdById : user?.id
-      
+      createdById : values?.createdById,
+      lastUpdatedById : user?.id
     })
   }
 

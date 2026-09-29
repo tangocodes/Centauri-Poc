@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
-import { type AllUsers, type Route, type Task, type TaskComment, type TaskCommentPost, type TaskFormValues, type ToastItem, type ToastType, type UpdateUserProfile, type UserProfile } from '../types'
+import { type AllUsers, type Notification, type Route, type Task, type TaskComment, type TaskCommentPost, type TaskFormValues, type ToastItem, type ToastType, type UpdateUserProfile, type UserProfile } from '../types'
+import { NOTIFICATION_POLL_MS, deleteNotification, fetchNotifications, markNotificationRead, sortByNewest } from '../lib/notifications'
 import { AppContext } from './appContext'
 
 
@@ -16,6 +17,9 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const toastIdRef = useRef(0)
   const [userDetails, setUserDetails] = useState<UserProfile | null>(null)
   const [allUserData, setAllUserData] = useState<AllUsers[] | null>(null);
+  const [notifications, setNotifications] = useState<Notification[]>([])
+  const [notificationsLoading, setNotificationsLoading] = useState(false)
+  const [notificationsError, setNotificationsError] = useState("")
 
   const dismissToast = useCallback((id: number) => {
     setToasts((prev) => prev.filter((toast) => toast.id !== id))
@@ -68,7 +72,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const createTask = async (values : TaskFormValues) => {
 
 
-    console.log(values ,"Hmm values")
     try {
 
       const payload = {
@@ -79,6 +82,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
         assignedToId: values.assignedToId
           ? Number(values.assignedToId)
           : undefined,
+        lastUpdatedById : values.lastUpdatedById ? Number(values.lastUpdatedById) : undefined
+
         
       }
       clearErrorState()
@@ -219,6 +224,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
         assignedToId: values.assignedToId
           ? Number(values.assignedToId)
           : undefined,
+        lastUpdatedById : values.lastUpdatedById ? Number(values.lastUpdatedById) : undefined
+        
         
       }
       clearErrorState()
@@ -291,10 +298,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
         const data = await response.json()
         const access_token = data.access_token
         const userData = data.userDetails
-
         setUserDetails(userData)
-        console.log(access_token)
-
         localStorage.setItem('access_token', access_token);
         setIsAuthenticated(true)
         setRoute({ name: 'dashboard' })
@@ -412,7 +416,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
         }
         else {
           const users = await response.json()
-          console.log(users)
           setAllUserData(users)
 
         }
@@ -428,8 +431,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
    const updateUserData = async (values : UpdateUserProfile) => {
 
-
-    console.log(values ,"Hmm values")
     try {
 
       clearErrorState()
@@ -559,6 +560,128 @@ export function AppProvider({ children }: { children: ReactNode }) {
   }
 
 
+  /** Pull the signed-in user's notifications from the microservice. */
+  const getNotifications = useCallback(async () => {
+    const access_token = getToken()
+    if (!access_token) return
+
+    setNotificationsLoading(true)
+    try {
+      const result = await fetchNotifications(access_token)
+      if (result.unauthorized) {
+        handleUnauthorized()
+        return
+      }
+      if (!result.ok) {
+        setNotificationsError(`Request failed ${result.status}`)
+        return
+      }
+      setNotificationsError("")
+      setNotifications(sortByNewest(result.data ?? []))
+    }
+    catch (err) {
+      console.log(err)
+      setNotificationsError('Could not reach the notification service')
+    }
+    finally {
+      setNotificationsLoading(false)
+    }
+  }, [])
+
+  const markNotificationAsRead = useCallback(async (id: number) => {
+    const access_token = getToken()
+    if (!access_token) return
+
+    // Flip locally first so the badge reacts instantly; the next poll reconciles.
+    setNotifications((prev) =>
+      prev.map((item) => (item.id === id ? { ...item, isRead: true } : item)),
+    )
+    try {
+      const result = await markNotificationRead(access_token, id)
+      if (result.unauthorized) {
+        handleUnauthorized()
+        return
+      }
+      if (!result.ok) {
+        setNotificationsError(`Request failed ${result.status}`)
+      }
+    }
+    catch (err) {
+      console.log(err)
+      setNotificationsError('Could not update the notification')
+    }
+  }, [])
+
+  const markAllNotificationsAsRead = useCallback(async () => {
+    const access_token = getToken()
+    if (!access_token) return
+
+    const unreadIds = notifications
+      .filter((item) => !item.isRead)
+      .map((item) => item.id)
+
+    if (unreadIds.length === 0) return
+
+    setNotifications((prev) => prev.map((item) => ({ ...item, isRead: true })))
+    try {
+      const results = await Promise.all(
+        unreadIds.map((id) => markNotificationRead(access_token, id)),
+      )
+      if (results.some((result) => result.unauthorized)) {
+        handleUnauthorized()
+        return
+      }
+      if (results.some((result) => !result.ok)) {
+        setNotificationsError('Some notifications could not be marked as read')
+      }
+    }
+    catch (err) {
+      console.log(err)
+      setNotificationsError('Could not update the notifications')
+    }
+  }, [notifications])
+
+  const removeNotification = useCallback(async (id: number) => {
+    const access_token = getToken()
+    if (!access_token) return
+
+    const previous = notifications
+    setNotifications((prev) => prev.filter((item) => item.id !== id))
+    try {
+      const result = await deleteNotification(access_token, id)
+      if (result.unauthorized) {
+        handleUnauthorized()
+        return
+      }
+      if (!result.ok) {
+        setNotificationsError(`Request failed ${result.status}`)
+        setNotifications(previous)
+      }
+    }
+    catch (err) {
+      console.log(err)
+      setNotificationsError('Could not delete the notification')
+      setNotifications(previous)
+    }
+  }, [notifications])
+
+  // Load once shortly after sign-in, then keep polling so the bell badge stays
+  // fresh. The first tick is deferred (0 ms) so the effect body itself never
+  // flips state synchronously, which would cascade an extra render.
+  useEffect(() => {
+    if (!isAuthenticated) return
+
+    let timer = 0
+    const load = () => {
+      getNotifications()
+      timer = window.setTimeout(load, NOTIFICATION_POLL_MS)
+    }
+
+    timer = window.setTimeout(load, 0)
+
+    return () => window.clearTimeout(timer)
+  }, [isAuthenticated, getNotifications])
+
   const login = useCallback((email: string, password: string) => {
 
     loginUser(email, password)
@@ -569,6 +692,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
     setRoute({ name: 'login' })
     showToast("Hope you visit again!", "success")
     localStorage.removeItem('access_token')
+    setNotifications([])
+    setNotificationsError("")
   }, [])
 
 
@@ -640,7 +765,14 @@ export function AppProvider({ children }: { children: ReactNode }) {
         clearErrorState,
         toasts,
         showToast,
-        dismissToast
+        dismissToast,
+        notifications,
+        notificationsLoading,
+        notificationsError,
+        getNotifications,
+        markNotificationAsRead,
+        markAllNotificationsAsRead,
+        removeNotification
       }}
     >
       {children}

@@ -40,6 +40,7 @@ export interface Task {
   updatedAt: string
   assignedToId : AllUsers | null
   createdById : AllUsers | null
+  lastUpdatedBy : AllUsers | null
 }
 
 export interface UserProfile {
@@ -67,6 +68,20 @@ export interface AllUsers {
 
 }
 
+/**
+ * A notification owned by a user. Served by the standalone Notification
+ * microservice (see VITE_NOTIFICATION_SERVICE_URL) and scoped to the signed-in
+ * user by the JWT `sub` claim.
+ */
+export interface Notification {
+  id: number
+  userId: number
+  taskId: number | null
+  message: string
+  isRead: boolean
+  createdAt: string
+}
+
 export interface TaskFilters {
   search: string
   status: TaskStatus | 'all'
@@ -81,6 +96,7 @@ export type Route =
   | { name: 'edit-task'; taskId: number }
   | { name: 'task-detail'; taskId: number }
   | { name: 'profile' }
+  | { name: 'notifications' }
 
 export interface TaskFormValues {
   title: string
@@ -89,6 +105,7 @@ export interface TaskFormValues {
   priority: TaskPriority
   assignedToId : string | undefined
   createdById : string | undefined
+  lastUpdatedById:string | undefined
 }
 
 export type ToastType = 'success' | 'error' | 'info'

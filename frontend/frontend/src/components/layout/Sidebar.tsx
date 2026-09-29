@@ -1,18 +1,21 @@
 import { Icon } from '../ui/Icon'
+import type { IconName } from '../ui/Icon'
 import { Avatar } from '../ui/Avatar'
 import { useApp } from '../../context/appContext'
+import { badgeCount, unreadCount } from '../../lib/notifications'
 import type { Route } from '../../types'
 import { avatarColor } from '../../lib/format'
 
 interface NavItem {
   route: Route['name']
   label: string
-  icon: 'grid' | 'list' | 'settings'
+  icon: IconName
 }
 
 const MAIN_NAV: NavItem[] = [
   { route: 'dashboard', label: 'Dashboard', icon: 'grid' },
   { route: 'tasks', label: 'All Tasks', icon: 'list' },
+  { route: 'notifications', label: 'Notifications', icon: 'bell' },
 ]
 
 const GENERAL_NAV: NavItem[] = [
@@ -39,7 +42,8 @@ interface SidebarProps {
 }
 
 export function Sidebar({ open, onNavigate }: SidebarProps) {
-  const { route, navigate, user, logout } = useApp()
+  const { route, navigate, user, logout, notifications } = useApp()
+  const unread = unreadCount(notifications)
 
   const isActive = (name: Route['name']) =>
     route.name === name || (name === 'tasks' && route.name === 'task-detail')
@@ -72,6 +76,9 @@ export function Sidebar({ open, onNavigate }: SidebarProps) {
             >
               <Icon name={item.icon} size={18} />
               {item.label}
+              {item.route === 'notifications' && unread > 0 && (
+                <span className="sidebar-link-badge">{badgeCount(unread)}</span>
+              )}
             </button>
           ))}
 

@@ -2,6 +2,8 @@ services:
   postgres:
     image: postgres:16
     container_name: centauri-postgres
+    ports:
+      - "5432:5432"
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres_dev
@@ -13,7 +15,30 @@ services:
     ports:
       - "3000:3000"
     env_file:
-    - ./backend/.env
+      - ./backend/.env
+    environment:
+      - DB_HOST=postgres
+      - NOTIFICATION_SERVICE_URL=http://notification-service:3001
+    depends_on:
+      - postgres
+      - notification-service
+
+  notification-service:
+    build: ./notification-service
+    container_name: centauri-notification-service
+    ports:
+      - "3001:3001"
+    env_file:
+      - ./notification-service/.env
+    environment:
+      - PORT=3001
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_USERNAME=postgres
+      - DB_PASSWORD=postgres_dev
+      - DB_DATABASE=centauri_tasks
+      - SERVICE_API_KEY=centauri-internal-secret
+      - JWT_SECRET=centauri-secret
     depends_on:
       - postgres
 

@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Icon } from '../ui/Icon'
 import { IconButton } from '../ui/Button'
 import { Avatar } from '../ui/Avatar'
+import { NotificationBell } from '../notification/NotificationBell'
 import { useApp } from '../../context/appContext'
 import type { Route } from '../../types'
 import { avatarColor } from '../../lib/format'
@@ -13,6 +14,7 @@ const PAGE_TITLES: Partial<Record<Route['name'], string>> = {
   'edit-task': 'Edit Task',
   'task-detail': 'Task Details',
   profile: 'Settings',
+  notifications: 'Notifications',
 }
 
 interface HeaderProps {
@@ -44,10 +46,7 @@ export function Header({ onMenuClick }: HeaderProps) {
       </div>
 
       <div className="header-right">
-        <IconButton label="Notifications" className="header-bell">
-          <Icon name="bell" size={19} />
-          <span className="header-bell-dot" aria-hidden="true" />
-        </IconButton>
+        <NotificationBell />
 
         <div className="header-user">
           <button

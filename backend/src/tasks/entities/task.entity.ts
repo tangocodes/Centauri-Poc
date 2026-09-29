@@ -23,6 +23,9 @@ export class Task {
   @ManyToOne(() => User, { nullable: true }) // one user can have multiple tasks thats why manytoone
   createdById: User | null;
 
+  @ManyToOne(() => User, { nullable: true }) // one user can have multiple tasks thats why manytoone
+  lastUpdatedBy: User | null;
+
   @OneToMany(()=> TaskComment , (comment)=>comment.task)
   comments : TaskComment[]
 

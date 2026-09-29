@@ -35,6 +35,7 @@ export type IconName =
   | 'hourglass'
   | 'trendUp'
   | 'briefcase'
+  | 'refresh'
 
 const iconPaths: Record<IconName, ReactNode> = {
   grid: (
@@ -237,6 +238,12 @@ const iconPaths: Record<IconName, ReactNode> = {
     <>
       <rect width="20" height="14" x="2" y="7" rx="2" />
       <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
+    </>
+  ),
+  refresh: (
+    <>
+      <path d="M21 12a9 9 0 1 1-2.64-6.36" />
+      <polyline points="21 3 21 9 15 9" />
     </>
   ),
 }

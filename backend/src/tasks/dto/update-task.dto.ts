@@ -25,4 +25,8 @@ export class UpdateTaskDto {
   @IsOptional()
   @IsInt()
   createdById?: number;
+
+  @IsOptional()
+  @IsInt()
+  lastUpdatedById?: number;
 }

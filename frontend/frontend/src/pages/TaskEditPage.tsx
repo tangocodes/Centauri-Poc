@@ -51,12 +51,12 @@ export function TaskEditPage({ taskId }: { taskId: number }) {
           description: task.description,
           status: task.status,
           priority: task.priority,
-          assignedToId:String(task.assignedToId?.id)  
+          assignedToId:String(task.assignedToId?.id),
+          createdById : String(task.createdById?.id) 
         }}
         submitLabel="Save Changes"
         onSubmit={(values) => {
-          // TODO: replace with a real update-task API call.
-          console.log("clicked")
+          console.log("clicked",values)
           saveTask(task.id, values)
         
          // navigate({ name: 'task-detail', taskId })

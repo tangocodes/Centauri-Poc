@@ -5,6 +5,7 @@
   import { Repository } from 'typeorm';
   import { UpdateTaskDto } from './dto/update-task.dto.js';
   import { User } from '../users/entities/user.entity.js';
+  import { NotificationsClientService } from '../notifications-client/notifications-client.service.js';
 
   @Injectable()
   export class TasksService {
@@ -13,14 +14,16 @@
       @InjectRepository(Task) 
       private readonly taskRepository: Repository<Task>,
       @InjectRepository(User)
-      private readonly userRepository : Repository<User>
+      private readonly userRepository : Repository<User>,
+      private readonly notificationsClientService: NotificationsClientService,
   ){}
 
   async getAllTasks(): Promise<Task[]> {
       return this.taskRepository.find(
         {relations: {
     assignedToId: true,
-    createdById : true
+    createdById : true,
+    lastUpdatedBy:true
   },}
       );
     }
@@ -79,10 +82,22 @@
       status,
       priority,
       assignedToId:assignedTo,
-      createdById:createdBy
+      createdById:createdBy,
+      lastUpdatedBy : createdBy
     });
 
-    return this.taskRepository.save(task);
+    const savedTask = await this.taskRepository.save(task);
+
+    // If assigned to a user, trigger notification asynchronously without blocking/failing task creation
+    if (assignedTo) {
+      void this.notificationsClientService.sendNotification({
+        userId: assignedTo.id,
+        taskId: savedTask.id,
+        message: `New task assigned to you: ${savedTask.title}`,
+      });
+    }
+
+    return savedTask;
   }
 
   async updateTask(
@@ -92,6 +107,7 @@
 
   let assignedTo: User | null = null;
   let createdBy: User | null = null;
+  let lastUpdatedBy : User | null = null;
 
    if (updates.createdById) {
       createdBy = await this.userRepository.findOne({
@@ -117,8 +133,22 @@
       }
     }
 
+    if (updates.lastUpdatedById) {
+      lastUpdatedBy = await this.userRepository.findOne({
+        where: { id: updates.lastUpdatedById },
+      });
+
+      if (!assignedTo) {
+        throw new NotFoundException(
+          `User with id ${updates.lastUpdatedById} not found`,
+        );
+      }
+    }
+
+
+
     
-    const task = await this.taskRepository.preload({id,...updates,assignedToId:assignedTo,createdById:createdBy});
+    const task = await this.taskRepository.preload({id,...updates,assignedToId:assignedTo,createdById:createdBy,lastUpdatedBy:lastUpdatedBy});
 
     console.log(task);
     if(!task)
@@ -126,7 +156,18 @@
       throw new NotFoundException(`We dont see any data with id : ${id}`)
     }
     
-    return this.taskRepository.save(task);
+    const updatedTask = await this.taskRepository.save(task);
+
+    // If task was assigned/re-assigned to a user, dispatch notification
+    if (assignedTo) {
+      void this.notificationsClientService.sendNotification({
+        userId: assignedTo.id,
+        taskId: updatedTask.id,
+        message: `Task assigned to you: ${updatedTask.title}`,
+      });
+    }
+
+    return updatedTask;
 
   }
 
@@ -144,3 +185,4 @@
   }
       
   }
+
